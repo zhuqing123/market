@@ -47,7 +47,7 @@ public class VegetablesController extends BaseController {
     public ResponseEntity deleteVegetable(String ids) {
         List<String> list = Arrays.asList(ids.split(","));
         ResponseView view = this.vegetablesService.deleteVegetable(list);
-        return new ResponseEntity(view, HttpStatus.OK);
+        return  new ResponseEntity(view, HttpStatus.OK);
 
     }
 
