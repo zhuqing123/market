@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh-CN">
+<head>
+    <meta charset="UTF-8"/>
+    <IfModule headers_module=" Header always append X-Frame-Options 'SAMEORIGIN'"></IfModule>
+    <title>列表</title>
+    <link rel="stylesheet" type="text/css" href="/js/jquery/themes/default/easyui.css"/>
+    <link rel="stylesheet" type="text/css" href="/js/jquery/themes/icon.css"/>
+    <link rel="stylesheet" type="text/css" href="/js/jquery/demo/demo.css"/>
+    <script type="text/javascript" src="/js/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/js/jquery/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="/js/jquery/jquery.edatagrid.js"></script>
+    <script type="text/javascript" src="/js/index.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $('.buttons').click(function () {
+                var buttonValue=$(this).val();
+                var url;
+                if (buttonValue==1){
+                    url='/flt/vege.html';
+                }else if (buttonValue==2){
+                    url='/flt/customer.html';
+                }
+                $.ajax({
+                    url:url,
+                    type:'get',
+                    success:function (html) {
+                        $('#centerId').html('');
+                        $('#centerId').html(html);
+
+                    }
+                });
+
+            });
+        })
+    </script>
+</head>
+<body class="easyui-layout">
+<div data-options="region:'west',split:true,collapsible:false" title="" style="width:100px;">
+    <div>
+        <button class="buttons" style="letter-spacing: 15px;font-size: 15px" value="1"><span>菜单</span></button>
+        <button class="buttons" style="letter-spacing: 15px;font-size: 15px" value="2"><span>客户</span></button>
+    </div>
+</div>
+<div id="centerId" data-options="region:'center',title:'',iconCls:'icon-ok,collapsible:false'">
+</div>
+</body>
+</html>
