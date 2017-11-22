@@ -8,12 +8,12 @@ import com.example.market.utils.ResponseView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import java.util.Arrays;
+import java.util.List;
 
 @RestController
 public class CostomerController extends BaseController {
@@ -22,20 +22,26 @@ public class CostomerController extends BaseController {
     private CustomerService customerService;
 
     @GetMapping("/get/customer")
-    private ResponseEntity findAllCustomer(@Valid CustomerForm form) {
+    public ResponseEntity findAllCustomer(@Valid CustomerForm form) {
         ResponseView view = this.customerService.findAllCustomer(form);
         return new ResponseEntity(view, HttpStatus.OK);
     }
 
     @PostMapping("/add/customer")
-    private ResponseEntity addCustomer(@Valid CustomerAddForm form) {
+    public ResponseEntity addCustomer(@Valid CustomerAddForm form) {
         ResponseView view = this.customerService.addCustomer(form);
         return new ResponseEntity(view,HttpStatus.OK);
     }
 
     @PutMapping("/edit/customer")
-    private ResponseEntity editCustomer(@Valid CustomerEditForm form) {
+    public ResponseEntity editCustomer(@Valid CustomerEditForm form) {
         ResponseView view = this.customerService.editCustomer(form);
         return new ResponseEntity(view,HttpStatus.OK);
+    }
+
+    @DeleteMapping("/delete/customer")
+    public   ResponseEntity deleteCustomer(@NotNull String ids){
+        List<String> list = Arrays.asList(ids.split(","));
+        return new ResponseEntity(this.customerService.deleteCustomer(list),HttpStatus.OK);
     }
 }

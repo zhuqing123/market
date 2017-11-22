@@ -18,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -78,6 +79,7 @@ public class CustomerServiceImpl implements CustomerService {
         return new ResponseView(0,"success",pageVo);
     }
 
+    @Transactional
     @Override
     public ResponseView addCustomer(CustomerAddForm form) {
         CustomerEntity customerEntity=this.customerRepository.findByCustomerName(form.getCustomerName());
@@ -98,15 +100,39 @@ public class CustomerServiceImpl implements CustomerService {
         return new ResponseView(0,"保存成功");
     }
 
+    @Transactional
     @Override
     public ResponseView editCustomer(CustomerEditForm form) {
         CustomerEntity customerEntity = this.customerRepository.findOne(form.getId());
         if (customerEntity!=null){
-
+            CustomerEntity customerEntity1 = this.customerRepository.findByCustomerAddr(form.getCustomerAddr());
+            if (customerEntity1!=null&&!form.getId().equals(customerEntity1.getId())){
+                return new ResponseView(1,"客户地址不能重复");
+            }
+            customerEntity1=this.customerRepository.findByCustomerName(form.getCustomerName());
+            if (customerEntity1!=null&&!form.getId().equals(customerEntity1.getId())){
+                return new ResponseView(1,"客户名称不能重复");
+            }
+            customerEntity1=this.customerRepository.findByPhoneNum(form.getPhoneNum());
+            if (customerEntity1!=null&&!form.getId().equals(customerEntity1.getId())){
+                return new ResponseView(1,"客户手机不能重复");
+            }
+            BeanUtils.copyProperties(form,customerEntity);
+            this.customerRepository.save(customerEntity);
+            return new ResponseView(0,"更新成功");
         }else {
             return new ResponseView(1,"数据丢失请联系管理员");
         }
-        return null;
+    }
+
+    @Transactional
+    @Override
+    public ResponseView deleteCustomer(List<String> list) {
+        List<CustomerEntity> all = this.customerRepository.findAll(list);
+        if (!CollectionUtils.isEmpty(all)){
+            this.customerRepository.delete(all);
+        }
+        return new ResponseView(0,"删除成功");
     }
 
 }

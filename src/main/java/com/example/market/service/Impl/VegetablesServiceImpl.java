@@ -95,6 +95,7 @@ public class VegetablesServiceImpl implements VegetablesService {
         return new ResponseView(0,"保存成功");
     }
 
+    @Transactional
     @Override
     public ResponseView editVegetable(VegetablesEditForm form) {
         VegetablesEntity vegetablesEntity = this.vegetablesRepository.findOne(form.getId());
@@ -128,6 +129,7 @@ public class VegetablesServiceImpl implements VegetablesService {
         return new ResponseView(0,"编辑成功");
     }
 
+    @Transactional
     @Override
     public ResponseView deleteVegetable(List<String> ids) {
         List<VegetablesEntity> all = this.vegetablesRepository.findAll(ids);

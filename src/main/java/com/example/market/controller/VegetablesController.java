@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.Arrays;
 import java.util.List;
 
@@ -44,7 +45,7 @@ public class VegetablesController extends BaseController {
     }
 
     @DeleteMapping(value = "/delete/vege")
-    public ResponseEntity deleteVegetable(String ids) {
+    public ResponseEntity deleteVegetable(@NotNull String ids) {
         List<String> list = Arrays.asList(ids.split(","));
         ResponseView view = this.vegetablesService.deleteVegetable(list);
         return  new ResponseEntity(view, HttpStatus.OK);

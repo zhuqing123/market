@@ -169,11 +169,11 @@ $(function () {
                                                 msg: data.message,
                                                 timeout: 400
                                             });
+                                            $("#vegeId").datagrid("clearSelections");
                                             $('#vegeId').datagrid('reload');
                                         }
                                     })
-                                    $("#vegeId").datagrid("clearSelections");
-                                    $('#vegeId').datagrid('reload');
+
                                 } else {
                                     return;
                                 }
@@ -198,7 +198,11 @@ $(function () {
                 text: '取消',
                 iconCls: 'icon-cancel',
                 handler: function () {
-                    $('#vegeId').datagrid('rejectChanges');
+                    if (vegeFlag != "add") {
+                        $('#vegeId').datagrid('rejectChanges');
+                    } else {
+                        $('#vegeId').datagrid('reload');
+                    }
                     vegeEditing = undefined;
 
                 }
@@ -214,9 +218,9 @@ $(function () {
                 text: '查询',
                 iconCls: 'icon-search',
                 handler: function () {
-                    $('#vegeId').datagrid('load',{
-                        vegeName:$('#vegeNameId').val(),
-                        vegeCode:$('#vegeCodeId').val()
+                    $('#vegeId').datagrid('load', {
+                        vegeName: $('#vegeNameId').val(),
+                        vegeCode: $('#vegeCodeId').val()
                     })
                 }
             }
@@ -257,17 +261,6 @@ $(function () {
 
         }
     });
-    //
-    // $('#vegeNameId').searchbox({
-    //     width : 180,
-    //     prompt : '请输入标题'
-    // });
-    // $('#tb').appendTo('#vegeId.datagrid-toolbar');
-    // function doSearch() {
-    //     $("#vegeId").datagrid("load", {
-    //         "sTitle" : $("#sTitle").val()
-    //     });
-    // }
 
 
     var customerEditing;//判断客户是否处于编辑状态
@@ -282,7 +275,15 @@ $(function () {
         striped: true,
         loadMsg: '数据加载中',
         rownumbers: true,
+        method: "get",
         idField: 'id',
+        url: "/market/v1/get/customer",
+        loadFilter: function (data) {
+            if (data.status == 0) {
+                var datas = {"total": data.data.totalElements, "rows": data.data.content}
+                return datas;
+            }
+        },
         // singleSelect: true,
         frozenColumns: [[
             {
@@ -345,10 +346,11 @@ $(function () {
                 editor: {
                     type: 'combobox',
                     options: {
-                        data: [{id: 'A', val: 'A类'}, {id: 'B', val: 'B类'}, {id: 'C', val: 'C类'}, {id: 'D', val: 'D类'}],
+                        data: [{id: 'A', val: 'A'}, {id: 'B', val: 'B'}, {id: 'C', val: 'C'}, {id: 'D', val: 'D'}],
                         valueField: 'id',
                         textField: 'val',
                         required: true,
+                        editable: false,
                         missingMessage: '客户类型必填'
                     }
                 }
@@ -390,7 +392,7 @@ $(function () {
                         $.messager.show({
                             title: '提示信息',
                             msg: '只能选择一条记录进行修改',
-                            timeout: 200
+                            timeout: 400
                         });
                     } else {
                         if (customerEditing == undefined) {
@@ -413,7 +415,7 @@ $(function () {
                         $.messager.show({
                             title: '提示信息',
                             msg: '请选择数据',
-                            timeout: 200
+                            timeout: 400
                         });
                     } else {
                         $.messager.confirm({
@@ -425,11 +427,26 @@ $(function () {
                             cancel: '否',
                             fn: function (r) {
                                 if (r) {
-                                    var ids = new Array();
+                                    var ids = "";
                                     for (var i = 0; i < arr.length; i++) {
-                                        ids.push(arr[i].vegeCode);
+                                        ids += arr[i].id + ",";
                                     }
-                                    $('#customerId').datagrid('reload');
+                                    ids = ids.substring(0, ids.length - 1)
+                                    $.ajax({
+                                        url: "/market/v1/delete/customer",
+                                        data: {"ids": ids, _method: 'DELETE'},
+                                        type: "post",
+                                        dataType: "json",
+                                        success: function (data) {
+                                            $.messager.show({
+                                                title: '提示信息',
+                                                msg: data.message,
+                                                timeout: 400
+                                            });
+                                            $("#customerId").datagrid("clearSelections");
+                                            $('#customerId').datagrid('reload');
+                                        }
+                                    });
                                 } else {
                                     return;
                                 }
@@ -454,25 +471,73 @@ $(function () {
                 text: '取消',
                 iconCls: 'icon-cancel',
                 handler: function () {
-                    $('#customerId').datagrid('rejectChanges');
+                    if (customerFlag != "add") {
+                        $('#customerId').datagrid('rejectChanges');
+                    } else {
+                        $('#customerId').datagrid('reload');
+                    }
                     customerEditing = undefined;
 
+                }
+            },
+            {
+                text: '客户名称：<input type="text" id="customerNameId"/>'
+            },
+            {
+                text: '客户地址：<input type="text" id="customerAddrId"/>'
+            },
+            {
+                text: '电话号码：<input type="text" id="phoneNumId"/>'
+            },
+            {
+                text: '类型：<select id="typeId"><option></option><option value="A">A</option> <option value="B">B</option> <option value="C">C</option> <option value="D">D</option></select>'
+            },
+            {
+                id: 'searchBtn',
+                text: '查询',
+                iconCls: 'icon-search',
+                handler: function () {
+                    $('#customerId').datagrid('load', {
+                        customerName: $('#customerNameId').val(),
+                        customerAddr: $('#customerAddrId').val(),
+                        phoneNum: $('#phoneNumId').val(),
+                        type: $('#typeId').val()
+                    })
                 }
             }
         ],
         onAfterEdit: function (index, record) {
             if (customerFlag == 'add') {
-                $.messager.show({
-                    title: '提示信息',
-                    msg: '保存成功',
-                    timeout: 200
+                $.ajax({
+                    url: "/market/v1//add/customer",
+                    data: record,
+                    type: "POST",
+                    dataType: "json",
+                    success: function (data) {
+                        $.messager.show({
+                            title: '提示信息',
+                            msg: data.message,
+                            timeout: 400
+                        });
+                        $('#customerId').datagrid('reload');
+                    }
                 });
+
             } else if (customerFlag == 'edit') {
-                $.messager.show({
-                    title: '提示信息',
-                    msg: '修改成功',
-                    timeout: 200
+                $.ajax({
+                    url: "/market/v1/edit/customer",
+                    data: record,
+                    type: "put",
+                    dataType: "json",
+                    success: function (data) {
+                        $.messager.show({
+                            title: '提示信息',
+                            msg: data.message,
+                            timeout: 400
+                        });
+                    }
                 });
+
             }
 
         }
