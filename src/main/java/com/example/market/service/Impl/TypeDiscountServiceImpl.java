@@ -1,9 +1,11 @@
 package com.example.market.service.Impl;
 
+import com.example.market.entity.CustomerEntity;
 import com.example.market.entity.TypeDiscountEntity;
 import com.example.market.entity.form.TypeDiscountAddForm;
 import com.example.market.entity.form.TypeDiscountEditForm;
 import com.example.market.entity.vo.TypeDiscountVo;
+import com.example.market.repository.CustomerRepository;
 import com.example.market.repository.TypeDiscountRepository;
 import com.example.market.service.TypeDiscountService;
 import com.example.market.utils.MarketException;
@@ -12,6 +14,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +28,9 @@ public class TypeDiscountServiceImpl implements TypeDiscountService {
 
     @Autowired
     private TypeDiscountRepository typeDiscountRepository;
+
+    @Autowired
+    private CustomerRepository customerRepository;
 
     @Override
     public ResponseView findAllType() {
@@ -56,12 +62,26 @@ public class TypeDiscountServiceImpl implements TypeDiscountService {
     @Override
     public ResponseView editType(TypeDiscountEditForm form) throws MarketException {
         TypeDiscountEntity byType = this.typeDiscountRepository.findByType(form.getType());
-        if (byType!=null&&!form.getId().equals(byType.getId())){
+        if (null != byType && !form.getId().equals(byType.getId())) {
             throw new MarketException("类型重复");
         }
         TypeDiscountEntity typeDiscountEntity = byType = this.typeDiscountRepository.findOne(form.getId());
-        BeanUtils.copyProperties(form,typeDiscountEntity);
+        BeanUtils.copyProperties(form, typeDiscountEntity);
         this.typeDiscountRepository.save(typeDiscountEntity);
-        return new ResponseView(0,"更新成功");
+        return new ResponseView(0, "更新成功");
+    }
+
+    @Transactional
+    @Override
+    public ResponseView deleteType(List<String> list) throws MarketException {
+        List<CustomerEntity> customerEntityList=this.customerRepository.findByTypeIn(list);
+        if (!CollectionUtils.isEmpty(customerEntityList)){
+            throw new MarketException("不能删除，客户中有关联类型");
+        }
+        List<TypeDiscountEntity> all = this.typeDiscountRepository.findAll(list);
+        if (!CollectionUtils.isEmpty(all)){
+            this.typeDiscountRepository.delete(all);
+        }
+        return new ResponseView(0,"删除成功");
     }
 }

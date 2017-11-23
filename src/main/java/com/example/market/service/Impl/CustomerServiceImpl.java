@@ -1,12 +1,14 @@
 package com.example.market.service.Impl;
 
 import com.example.market.entity.CustomerEntity;
+import com.example.market.entity.TypeDiscountEntity;
 import com.example.market.entity.form.CustomerAddForm;
 import com.example.market.entity.form.CustomerEditForm;
 import com.example.market.entity.form.CustomerForm;
 import com.example.market.entity.vo.CustomerVo;
 import com.example.market.entity.vo.PageVo;
 import com.example.market.repository.CustomerRepository;
+import com.example.market.repository.TypeDiscountRepository;
 import com.example.market.service.CustomerService;
 import com.example.market.utils.ResponseView;
 import org.apache.commons.lang3.StringUtils;
@@ -32,6 +34,9 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Autowired
     private CustomerRepository customerRepository;
+
+    @Autowired
+    private TypeDiscountRepository typeDiscountRepository;
 
     @Override
     public ResponseView findAllCustomer(CustomerForm form) {
@@ -73,6 +78,10 @@ public class CustomerServiceImpl implements CustomerService {
             for (CustomerEntity customerEntity:content){
                 CustomerVo vo=new CustomerVo();
                 BeanUtils.copyProperties(customerEntity,vo);
+                TypeDiscountEntity repositoryOne = this.typeDiscountRepository.findOne(customerEntity.getType());
+                if (repositoryOne!=null){
+                    vo.setType(repositoryOne.getType());
+                }
                 pageVo.getContent().add(vo);
             }
         }

@@ -20,6 +20,10 @@
                     url='/flt/vege.html';
                 }else if (buttonValue==2){
                     url='/flt/customer.html';
+                }else if (buttonValue==3){
+                    url='/flt/typeDiscount.html';
+                }else if (buttonValue==4){
+                    url='/flt/customerOrder.html';
                 }
                 $.ajax({
                     url:url,
@@ -40,6 +44,8 @@
     <div>
         <button class="buttons" style="letter-spacing: 15px;font-size: 15px" value="1"><span>菜单</span></button>
         <button class="buttons" style="letter-spacing: 15px;font-size: 15px" value="2"><span>客户</span></button>
+        <button class="buttons" style="letter-spacing: 15px;font-size: 15px" value="3"><span>类型</span></button>
+        <button class="buttons" style="letter-spacing: 3px;font-size: 10px" value="4"><span>客户订单</span></button>
     </div>
 </div>
 <div id="centerId" data-options="region:'center',title:'',iconCls:'icon-ok,collapsible:false'">

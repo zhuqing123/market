@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8"/>
-    <title>菜单列表</title>
+    <title>类型列表</title>
     <link rel="stylesheet" type="text/css" href="/js/jquery/themes/default/easyui.css"/>
     <link rel="stylesheet" type="text/css" href="/js/jquery/themes/icon.css"/>
     <link rel="stylesheet" type="text/css" href="/js/jquery/demo/demo.css"/>
@@ -13,7 +13,16 @@
     <script type="text/javascript" src="/js/index.js"></script>
 </head>
 <body>
-<table id="vegeId">
+<table id="typeDiscountId">
 </table>
+<div id="typeToolId" >
+    <div>
+        <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true" id="addTypeId">新增</a>
+        <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true" id="editTypeId">修改</a>
+        <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true" id="removeTypeId">删除</a>
+        <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-save',plain:true" id="saveId">保存</a>
+        <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-cancel',plain:true" id="cancelId">取消</a>
+    </div>
+</div>
 </body>
 </html>

@@ -21,7 +21,7 @@ public class CustomerEntity extends BaseEntity {
     @Column(name = "customer_addr_",length = 50)
     private String customerAddr;
 
-    @Column(name = "type_",length = 5)
+    @Column(name = "type_id_")
     private String type;
 
     public String getCustomerName() {

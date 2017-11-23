@@ -3,16 +3,17 @@ package com.example.market.controller;
 import com.example.market.entity.form.TypeDiscountAddForm;
 import com.example.market.entity.form.TypeDiscountEditForm;
 import com.example.market.service.TypeDiscountService;
+import com.example.market.utils.MarketException;
 import com.example.market.utils.ResponseView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Author:ZhuQing
@@ -31,14 +32,21 @@ public class TypeDiscountController extends BaseController {
     }
 
     @PostMapping("/add/type")
-    public ResponseEntity addType(@Valid TypeDiscountAddForm form){
+    public ResponseEntity addType(@Valid TypeDiscountAddForm form) throws MarketException {
         ResponseView view=this.typeDiscountService.addType(form);
         return new ResponseEntity(view,HttpStatus.OK);
     }
 
     @PutMapping("/edit/type")
-    public ResponseEntity editType(@Valid TypeDiscountEditForm form){
+    public ResponseEntity editType(@Valid TypeDiscountEditForm form) throws MarketException {
         ResponseView view=this.typeDiscountService.editType(form);
+        return new ResponseEntity(view,HttpStatus.OK);
+    }
+
+    @DeleteMapping("/delete/type")
+    public ResponseEntity deleteType(@NotNull String ids) throws MarketException {
+        List<String> list = Arrays.asList(ids.split(","));
+        ResponseView view=this.typeDiscountService.deleteType(list);
         return new ResponseEntity(view,HttpStatus.OK);
     }
 
