@@ -786,10 +786,10 @@ $(function () {
                 width: 100,
                 align: 'center',
                 editor: {
-                    type: 'validatebox',
+                    type: 'combobox',
                     options: {
                         required: true,
-                        missingMessage: '蔬菜名必填'
+                        missingMessage: '客户名称必填'
                     }
                 }
             },
@@ -799,7 +799,7 @@ $(function () {
                 width: 100,
                 align: 'center',
                 editor: {
-                    type: 'validatebox',
+                    type: 'combobox',
                     options: {
                         required: true,
                         missingMessage: '菜名必填'
@@ -812,13 +812,11 @@ $(function () {
                 width: 100,
                 align: 'center',
                 editor: {
-                    type: 'numberbox',
+                    type: 'datetimebox',
                     options: {
                         required: true,
-                        missingMessage: '蔬菜价格必填',
-                        min: 0,
-                        max: 99999,
-                        precision: 2
+                        missingMessage: '送货时间必填',
+                        editable: false
                     }
                 }
             },
@@ -836,8 +834,7 @@ $(function () {
                 editor: {
                     type: 'numberbox',
                     options: {
-                        required: true,
-                        missingMessage: '蔬菜价格必填',
+                        required: false,
                         min: 0,
                         max: 99999,
                         precision: 2
@@ -849,32 +846,12 @@ $(function () {
                 title: '单品总价格',
                 width: 100,
                 align: 'center',
-                editor: {
-                    type: 'numberbox',
-                    options: {
-                        required: true,
-                        missingMessage: '蔬菜价格必填',
-                        min: 0,
-                        max: 99999,
-                        precision: 2
-                    }
-                }
             },
             {
                 field: 'profit',
                 title: '利润',
                 width: 100,
                 align: 'center',
-                editor: {
-                    type: 'numberbox',
-                    options: {
-                        required: true,
-                        missingMessage: '蔬菜价格必填',
-                        min: 0,
-                        max: 99999,
-                        precision: 2
-                    }
-                }
             },
             {
                 field: 'createTime',
@@ -1210,4 +1187,28 @@ $.extend($.fn.validatebox.defaults.rules, {
         message: "只能输入单个大写字母"
     }
     /* end */
+});
+
+/**为dataGrid配置dataTimeBox*/
+$.extend($.fn.datagrid.defaults.editors,{
+    datatimebox: {
+        init : function(container, options) {
+            var input = $('<input/>').appendTo(container);
+            options.editable = false;
+            input.datetimebox(options);
+            return input;
+        },
+        getValue : function(target) {
+            return$(target).datetimebox("getValue");
+        },
+        setValue : function(target, value) {
+            $(target).datetimebox("setValue",value);
+        },
+        resize : function(target, width) {
+            $(target).datetimebox("resize",width);
+        },
+        destroy : function(target) {
+            $(target).datetimebox("destroy");
+        }
+    }
 });
