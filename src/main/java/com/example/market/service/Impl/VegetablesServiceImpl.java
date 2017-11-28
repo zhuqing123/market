@@ -1,13 +1,19 @@
 package com.example.market.service.Impl;
 
+import com.example.market.entity.CustomerVegeEntity;
+import com.example.market.entity.UnitEntity;
 import com.example.market.entity.VegetablesEntity;
 import com.example.market.entity.form.VegetablesAddForm;
 import com.example.market.entity.form.VegetablesEditForm;
 import com.example.market.entity.form.VegetablesForm;
 import com.example.market.entity.vo.PageVo;
 import com.example.market.entity.vo.VegetablesVo;
+import com.example.market.repository.CustomerRepository;
+import com.example.market.repository.CustomerVegeRepository;
+import com.example.market.repository.UnitRepository;
 import com.example.market.repository.VegetablesRepository;
 import com.example.market.service.VegetablesService;
+import com.example.market.utils.MarketException;
 import com.example.market.utils.ResponseView;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -37,6 +43,12 @@ public class VegetablesServiceImpl implements VegetablesService {
 
     @Autowired
     private VegetablesRepository vegetablesRepository;
+
+    @Autowired
+    private UnitRepository unitRepository;
+
+    @Autowired
+    private CustomerVegeRepository customerVegeRepository;
 
     @Override
     public ResponseView vegetablesPage(VegetablesForm form) {
@@ -72,6 +84,8 @@ public class VegetablesServiceImpl implements VegetablesService {
             for (VegetablesEntity vegetablesEntity:content){
                 VegetablesVo vo=new VegetablesVo();
                 BeanUtils.copyProperties(vegetablesEntity,vo);
+                UnitEntity unitEntity = this.unitRepository.findOne(vegetablesEntity.getUnitId());
+                vo.setUnitId(unitEntity.getUnitName());
                 pageVo.getContent().add(vo);
             }
         }
@@ -132,7 +146,15 @@ public class VegetablesServiceImpl implements VegetablesService {
 
     @Transactional
     @Override
-    public ResponseView deleteVegetable(List<String> ids) {
+    public ResponseView deleteVegetable(List<String> ids) throws MarketException {
+
+        for (String id:ids){
+            List<CustomerVegeEntity> customerVegeEntities=this.customerVegeRepository.findByVegeId(id);
+            if (!CollectionUtils.isEmpty(customerVegeEntities)){
+                throw new MarketException("订单有关联，不能删除");
+            }
+        }
+
         List<VegetablesEntity> all = this.vegetablesRepository.findAll(ids);
         if (!CollectionUtils.isEmpty(all)){
             this.vegetablesRepository.delete(all);

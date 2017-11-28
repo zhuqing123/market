@@ -75,6 +75,29 @@ $(function () {
                 }
             },
             {
+                field: 'unitId',
+                title: '蔬菜单位',
+                width: 100,
+                align: 'center',
+                editor: {
+                    type: 'combobox',
+                    options: {
+                        url: '/market/v1/get/unit',
+                        method: 'get',
+                        loadFilter: function (data) {
+                            if (data.status == 0) {
+                                return data.data;
+                            }
+                        },
+                        valueField: 'id',
+                        textField: 'unitName',
+                        required: true,
+                        editable: false,
+                        missingMessage: '客户类型必填'
+                    }
+                }
+            },
+            {
                 field: 'createTime',
                 title: '创建时间',
                 width: 100,
@@ -340,7 +363,6 @@ $(function () {
                 editor: {
                     type: 'combobox',
                     options: {
-                        // data: [{id: 'A', val: 'A'}, {id: 'B', val: 'B'}, {id: 'C', val: 'C'}, {id: 'D', val: 'D'}],
                         url: '/market/v1/get/type',
                         method: 'get',
                         loadFilter: function (data) {
@@ -1068,6 +1090,218 @@ $(function () {
             endTime: endTime
         });
     })
+
+
+
+    /** 单位页面引用*/
+    var unitEditing;//判断单位是否处于编辑状态；
+    var unitFlag;//判断单位新增和修改
+    $("#unitId").datagrid({
+        title: "类型页面引用",
+        fitColumns: true,
+        autoRowHeight: false,
+        striped: true,
+        pagination: false,
+        url: '/market/v1/get/unit',
+        method: 'get',
+        loadMsg: '数据努力加载中...',
+        rownumbers: true,
+        frozenColumns: [[
+            {
+                field: 'ck',
+                checkbox: true
+            }
+        ]],
+        idFiled: 'id',
+        loadFilter: function (data) {
+            if (data.status == 0) {
+                return data.data;
+            }
+        },
+        columns: [[
+            {
+                field: 'id',
+                title: '主键',
+                width: 100,
+                hidden: true,
+                align: 'center',
+
+            }, {
+                field: 'unitName',
+                title: '单位',
+                width: 100,
+                align: 'center',
+                editor: {
+                    type: 'validatebox',
+                    options: {
+                        required: true
+                    }
+                }
+            },
+            {
+                field: 'createTime',
+                title: '创建时间',
+                width: 100,
+                align: 'center',
+            }
+        ]],
+        toolbar: [
+            {
+                text: '新增',
+                iconCls: 'icon-add',
+                handler: function () {
+                    if (unitEditing == undefined) {
+                        unitFlag = 'add';
+                        //1.取消所有的选中
+                        $('#unitId').datagrid('unselectAll')
+                        //1.追加一行
+                        $('#unitId').datagrid('appendRow', {createTime: new Date().Format("yyyy-MM-dd hh:mm:ss")});
+                        //2.得到当前列号
+                        unitEditing = $('#unitId').datagrid('getRows').length - 1;
+                        //3.开启编辑状态
+                        $('#unitId').datagrid('beginEdit', unitEditing);
+                    }
+                }
+            },
+            {
+                text: '修改',
+                iconCls: 'icon-edit',
+                handler: function () {
+                    var arr = $('#unitId').datagrid('getSelections');
+                    if (arr.length != 1) {
+                        $.messager.show({
+                            title: '提示信息',
+                            msg: '只能选择一条记录进行修改',
+                            timeout: 200
+                        });
+                    } else {
+                        if (unitEditing == undefined) {
+                            unitFlag = 'edit';
+                            //根据行记录对象，得到该行索引位置
+                            unitEditing = $('#unitId').datagrid('getRowIndex', arr[0]);
+                            //开启编辑状态
+                            $('#unitId').datagrid('beginEdit', unitEditing)
+                        }
+                    }
+
+                }
+            },
+            {
+                text: '删除',
+                iconCls: 'icon-remove',
+                handler: function () {
+                    var arr = $('#unitId').datagrid('getSelections');
+                    if (arr.length <= 0) {
+                        $.messager.show({
+                            title: '提示信息',
+                            msg: '请选择数据',
+                            timeout: 200
+                        });
+                    } else {
+                        $.messager.confirm({
+                            width: 380,
+                            height: 160,
+                            title: '操作确认',
+                            msg: '确定删除数据？',
+                            ok: '是',
+                            cancel: '否',
+                            fn: function (r) {
+                                if (r) {
+                                    var ids = '';
+                                    //var ids=new Array();
+                                    for (var i = 0; i < arr.length; i++) {
+                                        ids += arr[i].id + ",";
+                                        //ids.push(arr[i].id);
+                                    }
+                                    ids = ids.substring(0, ids.length - 1);
+                                    console.log(ids);
+                                    $.ajax({
+                                        url: '/market/v1/delete/unit',
+                                        data: {"ids": ids, _method: 'DELETE'},
+                                        type: 'post',
+                                        dataType: "json",
+                                        success: function (data) {
+                                            $.messager.show({
+                                                title: '提示信息',
+                                                msg: data.message,
+                                                timeout: 400
+                                            });
+                                            $("#unitId").datagrid("clearSelections");
+                                            $('#unitId').datagrid('reload');
+                                        }
+                                    })
+
+                                } else {
+                                    return;
+                                }
+                            }
+                        });
+                    }
+
+                }
+            },
+            {
+                text: '保存',
+                iconCls: 'icon-save',
+                handler: function () {
+                    //保存前进行数据验证，结束编辑，释放编辑状态
+                    if ($('#unitId').datagrid('validateRow', unitEditing)) {
+                        $('#unitId').datagrid('endEdit', unitEditing);
+                        unitEditing = undefined;
+                    }
+                }
+            },
+            {
+                text: '取消',
+                iconCls: 'icon-cancel',
+                handler: function () {
+                    if (unitFlag != "add") {
+                        $('#unitId').datagrid('rejectChanges');
+                    } else {
+                        $('#unitId').datagrid('reload');
+                    }
+                    unitEditing = undefined;
+
+                }
+            }
+        ],
+        onAfterEdit: function (index, record) {
+            if (unitFlag == 'add') {
+                $.ajax({
+                    url: '/market/v1/add/unit',
+                    type: 'post',
+                    data: record,
+                    dataType: 'json',
+                    success: function (data) {
+                        $.messager.show({
+                            title: '提示信息',
+                            msg: data.message,
+                            timeout: 400
+                        });
+                        $('#unitId').datagrid('reload');
+                    }
+                })
+            } else {
+                $.ajax({
+                    url: '/market/v1/edit/unit',
+                    type: 'put',
+                    data: record,
+                    dataType: 'json',
+                    success: function (data) {
+                        $.messager.show({
+                            title: '提示信息',
+                            msg: data.message,
+                            timeout: 400
+                        });
+                        if (data.status != 0) {
+                            $('#unitId').datagrid('reload');
+                        }
+                    }
+                })
+            }
+        }
+    })
+
 });
 
 

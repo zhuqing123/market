@@ -14,4 +14,6 @@ public interface VegetablesRepository extends BaseRepository<VegetablesEntity> {
     VegetablesEntity findByVegeCode(String vegeCode);
 
     List<VegetablesEntity> findByVegeNameLike(String vegeName);
+
+    List<VegetablesEntity> findByUnitId(String unitId);
 }

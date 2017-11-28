@@ -3,6 +3,7 @@ package com.example.market.service;
 import com.example.market.entity.form.VegetablesAddForm;
 import com.example.market.entity.form.VegetablesEditForm;
 import com.example.market.entity.form.VegetablesForm;
+import com.example.market.utils.MarketException;
 import com.example.market.utils.ResponseView;
 
 import java.util.List;
@@ -18,7 +19,7 @@ public interface VegetablesService {
 
     ResponseView editVegetable(VegetablesEditForm form);
 
-    ResponseView deleteVegetable(List<String> ids);
+    ResponseView deleteVegetable(List<String> ids) throws MarketException;
 
     ResponseView findVegeList(String p);
 }

@@ -4,6 +4,7 @@ import com.example.market.entity.form.VegetablesAddForm;
 import com.example.market.entity.form.VegetablesEditForm;
 import com.example.market.entity.form.VegetablesForm;
 import com.example.market.service.VegetablesService;
+import com.example.market.utils.MarketException;
 import com.example.market.utils.ResponseView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -45,7 +46,7 @@ public class VegetablesController extends BaseController {
     }
 
     @DeleteMapping(value = "/delete/vege")
-    public ResponseEntity deleteVegetable(@NotNull String ids) {
+    public ResponseEntity deleteVegetable(@NotNull String ids) throws MarketException {
         List<String> list = Arrays.asList(ids.split(","));
         ResponseView view = this.vegetablesService.deleteVegetable(list);
         return  new ResponseEntity(view, HttpStatus.OK);

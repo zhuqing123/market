@@ -17,6 +17,8 @@ public class VegetablesEditForm {
 
     private Double price;
 
+    private String unitId;
+
     public String getId() {
         return id;
     }
@@ -47,5 +49,13 @@ public class VegetablesEditForm {
 
     public void setPrice(Double price) {
         this.price = price;
+    }
+
+    public String getUnitId() {
+        return unitId;
+    }
+
+    public void setUnitId(String unitId) {
+        this.unitId = unitId;
     }
 }

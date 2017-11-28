@@ -17,6 +17,9 @@ public class VegetablesAddForm {
     @NotNull(message = "价格是必填")
     private Double price;
 
+    @NotNull(message = "单位是必填")
+    private String unitId;
+
     public String getVegeName() {
         return vegeName;
     }
@@ -39,5 +42,13 @@ public class VegetablesAddForm {
 
     public void setPrice(Double price) {
         this.price = price;
+    }
+
+    public String getUnitId() {
+        return unitId;
+    }
+
+    public void setUnitId(String unitId) {
+        this.unitId = unitId;
     }
 }

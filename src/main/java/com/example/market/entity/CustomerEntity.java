@@ -12,13 +12,13 @@ import javax.persistence.Table;
 @Table(name = "t_customer_info")
 public class CustomerEntity extends BaseEntity {
 
-    @Column(name = "customer_name_",length = 100)
+    @Column(name = "customer_name_", length = 100)
     private String customerName;
 
-    @Column(name = "phone_num_",length = 50)
+    @Column(name = "phone_num_", length = 50)
     private String phoneNum;
 
-    @Column(name = "customer_addr_",length = 50)
+    @Column(name = "customer_addr_", length = 50)
     private String customerAddr;
 
     @Column(name = "type_id_")
@@ -56,4 +56,5 @@ public class CustomerEntity extends BaseEntity {
     public void setType(String type) {
         this.type = type;
     }
+
 }
