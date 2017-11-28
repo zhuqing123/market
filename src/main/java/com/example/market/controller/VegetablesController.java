@@ -49,7 +49,12 @@ public class VegetablesController extends BaseController {
         List<String> list = Arrays.asList(ids.split(","));
         ResponseView view = this.vegetablesService.deleteVegetable(list);
         return  new ResponseEntity(view, HttpStatus.OK);
+    }
 
+    @GetMapping("/find/vegeList")
+    public ResponseEntity findVegeList(String q){
+        ResponseView view=this.vegetablesService.findVegeList(q);
+        return new ResponseEntity(view,HttpStatus.OK);
     }
 
 

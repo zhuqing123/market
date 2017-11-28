@@ -25,6 +25,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -137,5 +138,27 @@ public class VegetablesServiceImpl implements VegetablesService {
             this.vegetablesRepository.delete(all);
         }
         return new ResponseView(0,"删除成功");
+    }
+
+    @Override
+    public ResponseView findVegeList(String p) {
+        List<VegetablesEntity> vegetablesEntities = this.vegetablesRepository.findAll(new Specification<VegetablesEntity>() {
+            @Override
+            public Predicate toPredicate(Root<VegetablesEntity> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder cb) {
+                Predicate predicate = root.isNotNull();
+                if (StringUtils.isNoneBlank(p)) {
+                    predicate = cb.and(cb.like(root.get("vegeName").as(String.class), "%"+p+"%"), predicate);
+                    predicate = cb.or(cb.like(root.get("vegeCode").as(String.class), "%"+p+"%"), predicate);
+                }
+                return predicate;
+            }
+        });
+        List<VegetablesVo> vos=new ArrayList<VegetablesVo>();
+        for (VegetablesEntity vegetablesEntity:vegetablesEntities){
+            VegetablesVo vo=new VegetablesVo();
+            BeanUtils.copyProperties(vegetablesEntity,vo);
+            vos.add(vo);
+        }
+        return new ResponseView(0,"success",vos);
     }
 }

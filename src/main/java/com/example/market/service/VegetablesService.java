@@ -19,4 +19,6 @@ public interface VegetablesService {
     ResponseView editVegetable(VegetablesEditForm form);
 
     ResponseView deleteVegetable(List<String> ids);
+
+    ResponseView findVegeList(String p);
 }

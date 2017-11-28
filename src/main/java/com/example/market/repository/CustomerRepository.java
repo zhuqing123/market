@@ -16,4 +16,6 @@ public interface CustomerRepository extends BaseRepository<CustomerEntity> {
     CustomerEntity findByCustomerAddr(String customerAddr);
 
     List<CustomerEntity> findByTypeIn(List<String> list);
+
+    List<CustomerEntity> findByCustomerNameLike(String s);
 }

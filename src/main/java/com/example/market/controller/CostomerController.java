@@ -44,4 +44,10 @@ public class CostomerController extends BaseController {
         List<String> list = Arrays.asList(ids.split(","));
         return new ResponseEntity(this.customerService.deleteCustomer(list),HttpStatus.OK);
     }
+
+    @GetMapping("/customer/list")
+    public ResponseEntity customerListNotPage(String q){
+        ResponseView view=this.customerService.customerListNotPage(q);
+        return new ResponseEntity(view,HttpStatus.OK);
+    }
 }

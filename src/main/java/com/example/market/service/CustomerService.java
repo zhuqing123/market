@@ -15,4 +15,6 @@ public interface CustomerService {
     ResponseView editCustomer(CustomerEditForm form);
 
     ResponseView deleteCustomer(List<String> list);
+
+    ResponseView customerListNotPage(String q);
 }

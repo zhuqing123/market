@@ -328,7 +328,7 @@ $(function () {
                     type: 'validatebox',
                     options: {
                         required: true,
-                        validType:'phone'
+                        validType: 'phone'
                     }
                 }
             },
@@ -341,12 +341,12 @@ $(function () {
                     type: 'combobox',
                     options: {
                         // data: [{id: 'A', val: 'A'}, {id: 'B', val: 'B'}, {id: 'C', val: 'C'}, {id: 'D', val: 'D'}],
-                        url:'/market/v1/get/type',
-                        method:'get',
-                        loadFilter:function (data) {
-                          if(data.status==0){
-                              return data.data;
-                          }
+                        url: '/market/v1/get/type',
+                        method: 'get',
+                        loadFilter: function (data) {
+                            if (data.status == 0) {
+                                return data.data;
+                            }
                         },
                         valueField: 'id',
                         textField: 'type',
@@ -523,7 +523,7 @@ $(function () {
     $('#customerSearchBtn').click(function () {
         var typeId = $('#typeSelectId').val();
         $("#typeSelectId").combobox('clear');
-        $('#customerId').datagrid('load',{
+        $('#customerId').datagrid('load', {
             customerName: $('#customernameid').val(),
             customerAddr: $('#customerAddrId').val(),
             phoneNum: $('#phoneNumId').val(),
@@ -732,10 +732,10 @@ $(function () {
 
     //加载类型下拉框
     $('#typeSelectId').combobox({
-        url:'/market/v1/get/type',
-        method:'get',
-        loadFilter:function (data) {
-            if(data.status==0){
+        url: '/market/v1/get/type',
+        method: 'get',
+        loadFilter: function (data) {
+            if (data.status == 0) {
                 return data.data;
             }
         },
@@ -744,11 +744,11 @@ $(function () {
     })
 
 
-
     /**
      *客户订单
      */
-    var customerOrderEditing;;//判断客户订单是否处于编辑状态；
+    var customerOrderEditing;
+    ;//判断客户订单是否处于编辑状态；
     var customerOrderFlag;//判断客户订单新增和修改
     $('#customerOrderId').datagrid({
         title: '客户订单列表',
@@ -788,6 +788,18 @@ $(function () {
                 editor: {
                     type: 'combobox',
                     options: {
+                        url: '/market/v1/customer/list',
+                        loadFilter: function (data) {
+                            if (data.status == 0) {
+                                var datas = data.data
+                                return datas;
+                            }
+                        },
+                        valueField: 'id',
+                        textField: 'customerName',
+                        mode: 'remote',
+                        method: 'get',
+                        delay: '1000',
                         required: true,
                         missingMessage: '客户名称必填'
                     }
@@ -801,6 +813,19 @@ $(function () {
                 editor: {
                     type: 'combobox',
                     options: {
+                        url: '/market/v1/find/vegeList',
+                        loadFilter: function (data) {
+                            if (data.status == 0) {
+                                var datas = data.data
+                                return datas;
+                            }
+                        },
+                        valueField: 'id',
+                        textField: 'vegeName',
+                        mode: 'remote',
+                        method: 'get',
+                        delay: '1000',
+                        multiple: true,
                         required: true,
                         missingMessage: '菜名必填'
                     }
@@ -870,7 +895,7 @@ $(function () {
                 iconCls: 'icon-add',
                 handler: function () {
                     if (vegeEditing == undefined) {
-                        vegeFlag = 'add';
+                        customerOrderFlag = 'add';
                         //1.取消所有的选中
                         $('#customerOrderId').datagrid('unselectAll')
                         //1.追加一行
@@ -975,16 +1000,26 @@ $(function () {
                 text: '取消',
                 iconCls: 'icon-cancel',
                 handler: function () {
-                    if (customerOrderFlag != "add") {
-                        $('#customerOrderId').datagrid('rejectChanges');
-                    } else {
-                        $('#customerOrderId').datagrid('reload');
-                    }
+                    $('#customerOrderId').datagrid('reload');
                     customerOrderEditing = undefined;
-
                 }
             }
         ],
+        onDblClickCell:function (rowIndex,field,value) {
+            debugger;
+            if (customerOrderEditing!=undefined) {
+                $('#customerOrderId').datagrid('endEdit', customerOrderEditing);
+                customerOrderEditing = undefined;
+            }
+
+            customerOrderFlag = 'edit';
+            //根据行记录对象，得到该行索引位置
+            customerOrderEditing = rowIndex;
+            //开启编辑状态
+            $('#customerOrderId').datagrid('beginEdit', customerOrderEditing)
+
+
+        },
         onAfterEdit: function (index, record) {
             if (customerOrderFlag == 'add') {
                 $.ajax({
@@ -1013,22 +1048,27 @@ $(function () {
                             msg: data.message,
                             timeout: 400
                         });
-                        $('#customerOrderId').datagrid('reload');
+                        // $('#customerOrderId').datagrid('reload');
                     }
                 })
             }
 
         }
     });
+    $('#customerOrderToolId').appendTo('.datagrid-toolbar');
+    $('#customerOrderSearchBtn').click(function () {
+        var startTime= $('#startTimeId').val()
+        var endTime= $('#endTimeId').val()
+        $('#startTimeId').datetimebox('clear');
+        $('#endTimeId').datetimebox('clear');
+        $('#customerOrderId').datagrid('load', {
+            customerName: $('#customerOrderNameId').val(),
+            vegeName: $('#customerOrderVegeId').val(),
+            startTime:startTime,
+            endTime: endTime
+        });
+    })
 });
-
-
-
-
-
-
-
-
 
 
 /**时间格式转化*/
@@ -1190,24 +1230,24 @@ $.extend($.fn.validatebox.defaults.rules, {
 });
 
 /**为dataGrid配置dataTimeBox*/
-$.extend($.fn.datagrid.defaults.editors,{
+$.extend($.fn.datagrid.defaults.editors, {
     datatimebox: {
-        init : function(container, options) {
+        init: function (container, options) {
             var input = $('<input/>').appendTo(container);
             options.editable = false;
             input.datetimebox(options);
             return input;
         },
-        getValue : function(target) {
+        getValue: function (target) {
             return$(target).datetimebox("getValue");
         },
-        setValue : function(target, value) {
-            $(target).datetimebox("setValue",value);
+        setValue: function (target, value) {
+            $(target).datetimebox("setValue", value);
         },
-        resize : function(target, width) {
-            $(target).datetimebox("resize",width);
+        resize: function (target, width) {
+            $(target).datetimebox("resize", width);
         },
-        destroy : function(target) {
+        destroy: function (target) {
             $(target).datetimebox("destroy");
         }
     }
