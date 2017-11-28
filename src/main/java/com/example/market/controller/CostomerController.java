@@ -4,6 +4,7 @@ import com.example.market.entity.form.CustomerAddForm;
 import com.example.market.entity.form.CustomerEditForm;
 import com.example.market.entity.form.CustomerForm;
 import com.example.market.service.CustomerService;
+import com.example.market.utils.MarketException;
 import com.example.market.utils.ResponseView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -40,7 +41,7 @@ public class CostomerController extends BaseController {
     }
 
     @DeleteMapping("/delete/customer")
-    public   ResponseEntity deleteCustomer(@NotNull String ids){
+    public   ResponseEntity deleteCustomer(@NotNull String ids) throws MarketException {
         List<String> list = Arrays.asList(ids.split(","));
         return new ResponseEntity(this.customerService.deleteCustomer(list),HttpStatus.OK);
     }

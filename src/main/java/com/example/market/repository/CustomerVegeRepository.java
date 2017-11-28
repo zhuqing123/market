@@ -10,4 +10,6 @@ import java.util.List;
  */
 public interface CustomerVegeRepository extends BaseRepository<CustomerVegeEntity> {
     List<CustomerVegeEntity> findByVegeId(String id);
+
+    List<CustomerVegeEntity> findByCustmerId(String id);
 }

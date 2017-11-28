@@ -85,7 +85,7 @@ public class VegetablesServiceImpl implements VegetablesService {
                 VegetablesVo vo=new VegetablesVo();
                 BeanUtils.copyProperties(vegetablesEntity,vo);
                 UnitEntity unitEntity = this.unitRepository.findOne(vegetablesEntity.getUnitId());
-                vo.setUnitId(unitEntity.getUnitName());
+                vo.setUnitName(unitEntity.getUnitName());
                 pageVo.getContent().add(vo);
             }
         }
@@ -137,6 +137,10 @@ public class VegetablesServiceImpl implements VegetablesService {
 
         if (form.getPrice()!=null){
             vegetablesEntity.setPrice(form.getPrice());
+        }
+
+        if (StringUtils.isNoneBlank(form.getUnitId())){
+            vegetablesEntity.setUnitId(form.getUnitId());
         }
 
         this.vegetablesRepository.save(vegetablesEntity);

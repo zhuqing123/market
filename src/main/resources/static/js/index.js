@@ -79,6 +79,7 @@ $(function () {
                 title: '蔬菜单位',
                 width: 100,
                 align: 'center',
+                hidden: true,
                 editor: {
                     type: 'combobox',
                     options: {
@@ -93,9 +94,15 @@ $(function () {
                         textField: 'unitName',
                         required: true,
                         editable: false,
-                        missingMessage: '客户类型必填'
+                        missingMessage: '蔬菜单位必填'
                     }
                 }
+            },
+            {
+                field: 'unitName',
+                title: '蔬菜单位',
+                width: 100,
+                align: 'center',
             },
             {
                 field: 'createTime',
@@ -121,6 +128,8 @@ $(function () {
                         $('#vegeId').datagrid('appendRow', {createTime: new Date().Format("yyyy-MM-dd hh:mm:ss")});
                         //2.得到当前列号
                         vegeEditing = $('#vegeId').datagrid('getRows').length - 1;
+                        $('#vegeId').datagrid('hideColumn', 'unitName');
+                        $('#vegeId').datagrid('showColumn', 'unitId');
                         //3.开启编辑状态
                         $('#vegeId').datagrid('beginEdit', vegeEditing);
                     }
@@ -144,6 +153,8 @@ $(function () {
                             //根据行记录对象，得到该行索引位置
                             vegeEditing = $('#vegeId').datagrid('getRowIndex', arr[0]);
                             //开启编辑状态
+                            $('#vegeId').datagrid('hideColumn', 'unitName');
+                            $('#vegeId').datagrid('showColumn', 'unitId');
                             $('#vegeId').datagrid('beginEdit', vegeEditing)
                         }
                     }
@@ -211,6 +222,8 @@ $(function () {
                     //保存前进行数据验证，结束编辑，释放编辑状态
                     if ($('#vegeId').datagrid('validateRow', vegeEditing)) {
                         $('#vegeId').datagrid('endEdit', vegeEditing);
+                        $('#vegeId').datagrid('showColumn', 'unitName');
+                        $('#vegeId').datagrid('hideColumn', 'unitId');
                         vegeEditing = undefined;
                     }
                 }
@@ -279,7 +292,6 @@ $(function () {
                     }
                 })
             }
-
         }
     });
 
@@ -359,6 +371,7 @@ $(function () {
                 field: 'type',
                 title: '客户类型',
                 width: 100,
+                hidden:true,
                 align: 'center',
                 editor: {
                     type: 'combobox',
@@ -377,6 +390,12 @@ $(function () {
                         missingMessage: '客户类型必填'
                     }
                 }
+            },
+            {
+                field: 'typeName',
+                title: '客户类型',
+                width: 100,
+                align: 'center',
             },
             {
                 field: 'createTime',
@@ -401,6 +420,8 @@ $(function () {
                         $('#customerId').datagrid('appendRow', {createTime: new Date().Format("yyyy-MM-dd hh:mm:ss")});
                         //2.得到当前列号
                         customerEditing = $('#customerId').datagrid('getRows').length - 1;
+                        $('#customerId').datagrid('hideColumn', 'typeName');
+                        $('#customerId').datagrid('showColumn', 'type');
                         //3.开启编辑状态
                         $('#customerId').datagrid('beginEdit', customerEditing);
                     }
@@ -423,6 +444,8 @@ $(function () {
                             //根据行记录对象，得到该行索引位置
                             customerEditing = $('#customerId').datagrid('getRowIndex', arr[0]);
                             //开启编辑状态
+                            $('#customerId').datagrid('hideColumn', 'typeName');
+                            $('#customerId').datagrid('showColumn', 'type');
                             $('#customerId').datagrid('beginEdit', customerEditing)
                         }
                     }
@@ -486,6 +509,8 @@ $(function () {
                     //保存前进行数据验证，结束编辑，释放编辑状态
                     if ($('#customerId').datagrid('validateRow', customerEditing)) {
                         $('#customerId').datagrid('endEdit', customerEditing);
+                        $('#customerId').datagrid('showColumn', 'typeName');
+                        $('#customerId').datagrid('hideColumn', 'type');
                         customerEditing = undefined;
                     }
                 }
@@ -1027,9 +1052,9 @@ $(function () {
                 }
             }
         ],
-        onDblClickCell:function (rowIndex,field,value) {
+        onDblClickCell: function (rowIndex, field, value) {
             debugger;
-            if (customerOrderEditing!=undefined) {
+            if (customerOrderEditing != undefined) {
                 $('#customerOrderId').datagrid('endEdit', customerOrderEditing);
                 customerOrderEditing = undefined;
             }
@@ -1079,18 +1104,17 @@ $(function () {
     });
     $('#customerOrderToolId').appendTo('.datagrid-toolbar');
     $('#customerOrderSearchBtn').click(function () {
-        var startTime= $('#startTimeId').val()
-        var endTime= $('#endTimeId').val()
+        var startTime = $('#startTimeId').val()
+        var endTime = $('#endTimeId').val()
         $('#startTimeId').datetimebox('clear');
         $('#endTimeId').datetimebox('clear');
         $('#customerOrderId').datagrid('load', {
             customerName: $('#customerOrderNameId').val(),
             vegeName: $('#customerOrderVegeId').val(),
-            startTime:startTime,
+            startTime: startTime,
             endTime: endTime
         });
     })
-
 
 
     /** 单位页面引用*/

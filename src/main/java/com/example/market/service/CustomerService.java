@@ -3,6 +3,7 @@ package com.example.market.service;
 import com.example.market.entity.form.CustomerAddForm;
 import com.example.market.entity.form.CustomerEditForm;
 import com.example.market.entity.form.CustomerForm;
+import com.example.market.utils.MarketException;
 import com.example.market.utils.ResponseView;
 
 import java.util.List;
@@ -14,7 +15,7 @@ public interface CustomerService {
 
     ResponseView editCustomer(CustomerEditForm form);
 
-    ResponseView deleteCustomer(List<String> list);
+    ResponseView deleteCustomer(List<String> list) throws MarketException;
 
     ResponseView customerListNotPage(String q);
 }

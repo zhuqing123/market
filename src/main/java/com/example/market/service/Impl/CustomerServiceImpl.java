@@ -1,6 +1,7 @@
 package com.example.market.service.Impl;
 
 import com.example.market.entity.CustomerEntity;
+import com.example.market.entity.CustomerVegeEntity;
 import com.example.market.entity.TypeDiscountEntity;
 import com.example.market.entity.form.CustomerAddForm;
 import com.example.market.entity.form.CustomerEditForm;
@@ -8,8 +9,10 @@ import com.example.market.entity.form.CustomerForm;
 import com.example.market.entity.vo.CustomerVo;
 import com.example.market.entity.vo.PageVo;
 import com.example.market.repository.CustomerRepository;
+import com.example.market.repository.CustomerVegeRepository;
 import com.example.market.repository.TypeDiscountRepository;
 import com.example.market.service.CustomerService;
+import com.example.market.utils.MarketException;
 import com.example.market.utils.ResponseView;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -38,6 +41,9 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Autowired
     private TypeDiscountRepository typeDiscountRepository;
+
+    @Autowired
+    private CustomerVegeRepository customerVegeRepository;
 
     @Override
     public ResponseView findAllCustomer(CustomerForm form) {
@@ -81,7 +87,7 @@ public class CustomerServiceImpl implements CustomerService {
                 BeanUtils.copyProperties(customerEntity, vo);
                 TypeDiscountEntity repositoryOne = this.typeDiscountRepository.findOne(customerEntity.getType());
                 if (repositoryOne != null) {
-                    vo.setType(repositoryOne.getType());
+                    vo.setTypeName(repositoryOne.getType());
                 }
                 pageVo.getContent().add(vo);
             }
@@ -137,7 +143,13 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Transactional
     @Override
-    public ResponseView deleteCustomer(List<String> list) {
+    public ResponseView deleteCustomer(List<String> list) throws MarketException {
+        for (String id:list){
+            List<CustomerVegeEntity> vegeEntityList=this.customerVegeRepository.findByCustmerId(id);
+            if (!CollectionUtils.isEmpty(vegeEntityList)){
+                throw new MarketException("菜单中有关联客户不能删除");
+            }
+        }
         List<CustomerEntity> all = this.customerRepository.findAll(list);
         if (!CollectionUtils.isEmpty(all)) {
             this.customerRepository.delete(all);

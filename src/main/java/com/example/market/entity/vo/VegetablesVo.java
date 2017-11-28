@@ -26,6 +26,8 @@ public class VegetablesVo {
 
     private String unitId;
 
+    private String unitName;
+
     public String getId() {
         return id;
     }
@@ -80,5 +82,13 @@ public class VegetablesVo {
 
     public void setUnitId(String unitId) {
         this.unitId = unitId;
+    }
+
+    public String getUnitName() {
+        return unitName;
+    }
+
+    public void setUnitName(String unitName) {
+        this.unitName = unitName;
     }
 }

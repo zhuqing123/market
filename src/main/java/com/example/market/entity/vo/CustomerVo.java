@@ -16,6 +16,8 @@ public class CustomerVo {
 
     private String type;
 
+    private String typeName;
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date createTime;
 
@@ -76,5 +78,13 @@ public class CustomerVo {
 
     public void setLastModifyTime(Date lastModifyTime) {
         this.lastModifyTime = lastModifyTime;
+    }
+
+    public String getTypeName() {
+        return typeName;
+    }
+
+    public void setTypeName(String typeName) {
+        this.typeName = typeName;
     }
 }
