@@ -140,7 +140,6 @@ $(function () {
                 iconCls: 'icon-edit',
                 handler: function () {
                     var arr = $('#vegeId').datagrid('getSelections');
-                    console.log(arr)
                     if (arr.length != 1) {
                         $.messager.show({
                             title: '提示信息',
@@ -189,7 +188,6 @@ $(function () {
                                         //ids.push(arr[i].id);
                                     }
                                     ids = ids.substring(0, ids.length - 1);
-                                    console.log(ids);
                                     $.ajax({
                                         url: '/market/v1/delete/vege',
                                         data: {"ids": ids, _method: 'DELETE'},
@@ -232,11 +230,9 @@ $(function () {
                 text: '取消',
                 iconCls: 'icon-cancel',
                 handler: function () {
-                    if (vegeFlag != "add") {
-                        $('#vegeId').datagrid('rejectChanges');
-                    } else {
-                        $('#vegeId').datagrid('reload');
-                    }
+                    $('#vegeId').datagrid('showColumn', 'unitName');
+                    $('#vegeId').datagrid('hideColumn', 'unitId');
+                    $('#vegeId').datagrid('reload');
                     vegeEditing = undefined;
 
                 }
@@ -371,7 +367,7 @@ $(function () {
                 field: 'type',
                 title: '客户类型',
                 width: 100,
-                hidden:true,
+                hidden: true,
                 align: 'center',
                 editor: {
                     type: 'combobox',
@@ -519,11 +515,9 @@ $(function () {
                 text: '取消',
                 iconCls: 'icon-cancel',
                 handler: function () {
-                    if (customerFlag != "add") {
-                        $('#customerId').datagrid('rejectChanges');
-                    } else {
-                        $('#customerId').datagrid('reload');
-                    }
+                    $('#customerId').datagrid('showColumn', 'typeName');
+                    $('#customerId').datagrid('hideColumn', 'type');
+                    $('#customerId').datagrid('reload');
                     customerEditing = undefined;
 
                 }
@@ -563,7 +557,6 @@ $(function () {
 
             }
         }
-
     })
     $('#customerToolId').appendTo('.datagrid-toolbar');
     //客户查询
@@ -794,8 +787,7 @@ $(function () {
     /**
      *客户订单
      */
-    var customerOrderEditing;
-    ;//判断客户订单是否处于编辑状态；
+    var customerOrderEditing;//判断客户订单是否处于编辑状态；
     var customerOrderFlag;//判断客户订单新增和修改
     $('#customerOrderId').datagrid({
         title: '客户订单列表',
@@ -858,7 +850,7 @@ $(function () {
                 width: 100,
                 align: 'center',
                 editor: {
-                    type: 'combobox',
+                    type: 'combogrid',
                     options: {
                         url: '/market/v1/find/vegeList',
                         loadFilter: function (data) {
@@ -867,13 +859,30 @@ $(function () {
                                 return datas;
                             }
                         },
-                        valueField: 'id',
-                        textField: 'vegeName',
-                        mode: 'remote',
+                        idField:'id',
+                        panelWidth:450,
+                        textField:'vegeName',
                         method: 'get',
-                        delay: '1000',
+                        columns:[[
+                            {
+                                field:'id',
+                                title:'主键',
+                                width:100
+                            },
+                            {
+                                field:'vegeName',
+                                title:'菜名',
+                                width:100
+                            },
+                            {
+                                field:'vegeCode',
+                                title:'菜编码',
+                                width:100
+                            }
+                        ]],
                         multiple: true,
                         required: true,
+                        editable: false,
                         missingMessage: '菜名必填'
                     }
                 }
@@ -959,7 +968,6 @@ $(function () {
                 iconCls: 'icon-edit',
                 handler: function () {
                     var arr = $('#customerOrderId').datagrid('getSelections');
-                    console.log(arr)
                     if (arr.length != 1) {
                         $.messager.show({
                             title: '提示信息',
@@ -1006,7 +1014,6 @@ $(function () {
                                         //ids.push(arr[i].id);
                                     }
                                     ids = ids.substring(0, ids.length - 1);
-                                    console.log(ids);
                                     $.ajax({
                                         url: '/market/v1/delete/customerOrder',
                                         data: {"ids": ids, _method: 'DELETE'},
@@ -1053,7 +1060,6 @@ $(function () {
             }
         ],
         onDblClickCell: function (rowIndex, field, value) {
-            debugger;
             if (customerOrderEditing != undefined) {
                 $('#customerOrderId').datagrid('endEdit', customerOrderEditing);
                 customerOrderEditing = undefined;
@@ -1238,7 +1244,6 @@ $(function () {
                                         //ids.push(arr[i].id);
                                     }
                                     ids = ids.substring(0, ids.length - 1);
-                                    console.log(ids);
                                     $.ajax({
                                         url: '/market/v1/delete/unit',
                                         data: {"ids": ids, _method: 'DELETE'},
@@ -1508,5 +1513,28 @@ $.extend($.fn.datagrid.defaults.editors, {
         destroy: function (target) {
             $(target).datetimebox("destroy");
         }
+    }
+});
+
+
+$.extend($.fn.datagrid.defaults.editors, {
+    combogrid: {
+        init: function (container, options) {
+            var input = $('<inputtype="text" class="datagrid-editable-input">').appendTo(container);
+            input.combogrid(options);
+            return input;
+        },
+        destroy: function (target) {
+            $(target).combogrid('destroy');
+        },
+        getValue: function (target) {
+            return $(target).combogrid('getValue');
+        },
+        setValue: function (target, value) {
+            $(target).combogrid('setValue', value);
+        },
+        resize: function (target, width) {
+            $(target).combogrid('resize', width);
+        },
     }
 });
