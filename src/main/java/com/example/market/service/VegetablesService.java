@@ -1,5 +1,6 @@
 package com.example.market.service;
 
+import com.example.market.entity.VegetablesEntity;
 import com.example.market.entity.form.VegetablesAddForm;
 import com.example.market.entity.form.VegetablesEditForm;
 import com.example.market.entity.form.VegetablesForm;
@@ -22,4 +23,6 @@ public interface VegetablesService {
     ResponseView deleteVegetable(List<String> ids) throws MarketException;
 
     ResponseView findVegeList(String p);
+
+    VegetablesEntity findById(String commodityId);
 }

@@ -24,6 +24,12 @@ public class VegetablesEntity extends BaseEntity {
     @Column(name = "unit_id_")
     private String unitId;
 
+    @Column(name = "sale_price",columnDefinition = "double(10,2)")
+    private Double salePrice;
+
+    @Column(name = "rebate",columnDefinition = "double(10,2)")
+    private Double rebate;
+
     public String getVegeName() {
         return vegeName;
     }
@@ -54,5 +60,21 @@ public class VegetablesEntity extends BaseEntity {
 
     public void setUnitId(String unitId) {
         this.unitId = unitId;
+    }
+
+    public Double getSalePrice() {
+        return salePrice;
+    }
+
+    public void setSalePrice(Double salePrice) {
+        this.salePrice = salePrice;
+    }
+
+    public Double getRebate() {
+        return rebate;
+    }
+
+    public void setRebate(Double rebate) {
+        this.rebate = rebate;
     }
 }

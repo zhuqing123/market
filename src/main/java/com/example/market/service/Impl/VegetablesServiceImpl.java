@@ -67,103 +67,103 @@ public class VegetablesServiceImpl implements VegetablesService {
             }
         }, page);
 
-        PageVo<VegetablesVo> pageVo=new PageVo<VegetablesVo>();
+        PageVo<VegetablesVo> pageVo = new PageVo<VegetablesVo>();
         pageVo.setCurrentPage(form.getPage());
         pageVo.setPageSize(form.getRows());
-        int prevPage=all.hasPrevious()?form.getPage()-1:form.getRows();
+        int prevPage = all.hasPrevious() ? form.getPage() - 1 : form.getRows();
         pageVo.setPrevPage(prevPage);
         pageVo.setFirstPage(all.isFirst());
-        int nextPage=all.hasNext()?form.getPage()+1:form.getRows();
+        int nextPage = all.hasNext() ? form.getPage() + 1 : form.getRows();
         pageVo.setNextPage(nextPage);
         pageVo.setLastPage(all.isLast());
         pageVo.setTotalElements(all.getTotalElements());
         pageVo.setTotalPage(all.getTotalPages());
         pageVo.setCurrentPageElements(all.getNumberOfElements());
         List<VegetablesEntity> content = all.getContent();
-        if (!CollectionUtils.isEmpty(content)){
-            for (VegetablesEntity vegetablesEntity:content){
-                VegetablesVo vo=new VegetablesVo();
-                BeanUtils.copyProperties(vegetablesEntity,vo);
+        if (!CollectionUtils.isEmpty(content)) {
+            for (VegetablesEntity vegetablesEntity : content) {
+                VegetablesVo vo = new VegetablesVo();
+                BeanUtils.copyProperties(vegetablesEntity, vo);
                 UnitEntity unitEntity = this.unitRepository.findOne(vegetablesEntity.getUnitId());
                 vo.setUnitName(unitEntity.getUnitName());
                 pageVo.getContent().add(vo);
             }
         }
 
-        return new ResponseView(0,"success",pageVo);
+        return new ResponseView(0, "success", pageVo);
     }
 
     @Transactional
     @Override
     public ResponseView addVegetable(VegetablesAddForm form) {
-        VegetablesEntity  vegetablesEntity=this.vegetablesRepository.findByVegeName(form.getVegeName());
-        if (vegetablesEntity!=null){
-            return new ResponseView(1,"菜名重复");
+        VegetablesEntity vegetablesEntity = this.vegetablesRepository.findByVegeName(form.getVegeName());
+        if (vegetablesEntity != null) {
+            return new ResponseView(1, "菜名重复");
         }
-        vegetablesEntity=this.vegetablesRepository.findByVegeCode(form.getVegeCode());
-        if (vegetablesEntity!=null){
-            return new ResponseView(1,"菜编码重复");
+        vegetablesEntity = this.vegetablesRepository.findByVegeCode(form.getVegeCode());
+        if (vegetablesEntity != null) {
+            return new ResponseView(1, "菜编码重复");
         }
-        vegetablesEntity=new VegetablesEntity();
-        BeanUtils.copyProperties(form,vegetablesEntity);
+        vegetablesEntity = new VegetablesEntity();
+        BeanUtils.copyProperties(form, vegetablesEntity);
         this.vegetablesRepository.save(vegetablesEntity);
-        return new ResponseView(0,"保存成功");
+        return new ResponseView(0, "保存成功");
     }
 
     @Transactional
     @Override
     public ResponseView editVegetable(VegetablesEditForm form) {
         VegetablesEntity vegetablesEntity = this.vegetablesRepository.findOne(form.getId());
-        if (vegetablesEntity==null){
-            return new ResponseView(1,"数据错误");
+        if (vegetablesEntity == null) {
+            return new ResponseView(1, "数据错误");
         }
-        if (StringUtils.isNoneBlank(form.getVegeName())){
+        if (StringUtils.isNoneBlank(form.getVegeName())) {
             VegetablesEntity byVegeName = this.vegetablesRepository.findByVegeName(form.getVegeName());
-            if (byVegeName!=null&&!form.getId().equals(byVegeName.getId())){
-                return new ResponseView(1,"菜名重复，请重新输入");
-            }else {
+            if (byVegeName != null && !form.getId().equals(byVegeName.getId())) {
+                return new ResponseView(1, "菜名重复，请重新输入");
+            } else {
                 vegetablesEntity.setVegeName(form.getVegeName());
             }
         }
 
-        if (StringUtils.isNoneBlank(form.getVegeCode())){
+        if (StringUtils.isNoneBlank(form.getVegeCode())) {
             VegetablesEntity byVegeCode = this.vegetablesRepository.findByVegeCode(form.getVegeCode());
-            if (byVegeCode!=null&&!form.getId().equals(byVegeCode.getId())){
-                return new ResponseView(1,"菜编码重复，请重新输入");
-            }else {
+            if (byVegeCode != null && !form.getId().equals(byVegeCode.getId())) {
+                return new ResponseView(1, "菜编码重复，请重新输入");
+            } else {
                 vegetablesEntity.setVegeCode(form.getVegeCode());
             }
         }
 
-        if (form.getPrice()!=null){
+        if (form.getPrice() != null) {
             vegetablesEntity.setPrice(form.getPrice());
         }
 
-        if (StringUtils.isNoneBlank(form.getUnitId())){
+        if (StringUtils.isNoneBlank(form.getUnitId())) {
             vegetablesEntity.setUnitId(form.getUnitId());
         }
 
         this.vegetablesRepository.save(vegetablesEntity);
 
-        return new ResponseView(0,"编辑成功");
+        return new ResponseView(0, "编辑成功");
     }
 
     @Transactional
     @Override
     public ResponseView deleteVegetable(List<String> ids) throws MarketException {
 
-        for (String id:ids){
-            List<CustomerVegeEntity> customerVegeEntities=this.customerVegeRepository.findByVegeId(id);
-            if (!CollectionUtils.isEmpty(customerVegeEntities)){
+        for (String id : ids) {
+            List<CustomerVegeEntity> customerVegeEntities = this.customerVegeRepository.findByVegeId(id);
+            if (!CollectionUtils.isEmpty(customerVegeEntities)) {
                 throw new MarketException("订单有关联，不能删除");
             }
         }
 
         List<VegetablesEntity> all = this.vegetablesRepository.findAll(ids);
-        if (!CollectionUtils.isEmpty(all)){
+        if (!CollectionUtils.isEmpty(all)) {
             this.vegetablesRepository.delete(all);
         }
-        return new ResponseView(0,"删除成功");
+        return new ResponseView(0, "删除成功");
     }
 
     @Override
@@ -173,18 +173,23 @@ public class VegetablesServiceImpl implements VegetablesService {
             public Predicate toPredicate(Root<VegetablesEntity> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder cb) {
                 Predicate predicate = root.isNotNull();
                 if (StringUtils.isNoneBlank(p)) {
-                    predicate = cb.and(cb.like(root.get("vegeName").as(String.class), "%"+p+"%"), predicate);
-                    predicate = cb.or(cb.like(root.get("vegeCode").as(String.class), "%"+p+"%"), predicate);
+                    predicate = cb.and(cb.like(root.get("vegeName").as(String.class), "%" + p + "%"), predicate);
+                    predicate = cb.or(cb.like(root.get("vegeCode").as(String.class), "%" + p + "%"), predicate);
                 }
                 return predicate;
             }
         });
-        List<VegetablesVo> vos=new ArrayList<VegetablesVo>();
-        for (VegetablesEntity vegetablesEntity:vegetablesEntities){
-            VegetablesVo vo=new VegetablesVo();
-            BeanUtils.copyProperties(vegetablesEntity,vo);
+        List<VegetablesVo> vos = new ArrayList<VegetablesVo>();
+        for (VegetablesEntity vegetablesEntity : vegetablesEntities) {
+            VegetablesVo vo = new VegetablesVo();
+            BeanUtils.copyProperties(vegetablesEntity, vo);
             vos.add(vo);
         }
-        return new ResponseView(0,"success",vos);
+        return new ResponseView(0, "success", vos);
+    }
+
+    @Override
+    public VegetablesEntity findById(String commodityId) {
+        return this.vegetablesRepository.findOne(commodityId);
     }
 }

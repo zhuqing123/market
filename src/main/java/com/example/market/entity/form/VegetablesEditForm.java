@@ -19,6 +19,10 @@ public class VegetablesEditForm {
 
     private String unitId;
 
+    private Double salePrice;
+
+    private Double rebate;
+
     public String getId() {
         return id;
     }
@@ -57,5 +61,21 @@ public class VegetablesEditForm {
 
     public void setUnitId(String unitId) {
         this.unitId = unitId;
+    }
+
+    public Double getSalePrice() {
+        return salePrice;
+    }
+
+    public void setSalePrice(Double salePrice) {
+        this.salePrice = salePrice;
+    }
+
+    public Double getRebate() {
+        return rebate;
+    }
+
+    public void setRebate(Double rebate) {
+        this.rebate = rebate;
     }
 }

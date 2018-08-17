@@ -8,10 +8,10 @@ import javax.validation.constraints.NotNull;
  */
 public class VegetablesAddForm {
 
-    @NotNull(message = "菜名是必填")
+    @NotNull(message = "名字是必填")
     private String vegeName;
 
-    @NotNull(message = "菜编码是必填")
+    @NotNull(message = "编码是必填")
     private String vegeCode;
 
     @NotNull(message = "价格是必填")
@@ -19,6 +19,12 @@ public class VegetablesAddForm {
 
     @NotNull(message = "单位是必填")
     private String unitId;
+
+    @NotNull(message = "销售价是必填")
+    private Double salePrice;
+
+    @NotNull(message = "折扣是必填")
+    private Double rebate;
 
     public String getVegeName() {
         return vegeName;
@@ -50,5 +56,21 @@ public class VegetablesAddForm {
 
     public void setUnitId(String unitId) {
         this.unitId = unitId;
+    }
+
+    public void setRebate(Double rebate) {
+        this.rebate = rebate;
+    }
+
+    public Double getRebate() {
+        return rebate;
+    }
+
+    public void setSalePrice(Double salePrice) {
+        this.salePrice = salePrice;
+    }
+
+    public Double getSalePrice() {
+        return salePrice;
     }
 }

@@ -12,10 +12,10 @@ public class VegetablesVo {
 
     private String id;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date createTime;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date lastModifyTime;
 
     private String vegeName;
@@ -27,6 +27,10 @@ public class VegetablesVo {
     private String unitId;
 
     private String unitName;
+
+    private Double salePrice;
+
+    private Double rebate;
 
     public String getId() {
         return id;
@@ -90,5 +94,21 @@ public class VegetablesVo {
 
     public void setUnitName(String unitName) {
         this.unitName = unitName;
+    }
+
+    public Double getRebate() {
+        return rebate;
+    }
+
+    public void setRebate(Double rebate) {
+        this.rebate = rebate;
+    }
+
+    public Double getSalePrice() {
+        return salePrice;
+    }
+
+    public void setSalePrice(Double salePrice) {
+        this.salePrice = salePrice;
     }
 }

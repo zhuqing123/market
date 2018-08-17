@@ -34,40 +34,40 @@ $(function () {
             },
             {
                 field: 'vegeName',
-                title: '蔬菜名',
+                title: '名字',
                 width: 100,
                 align: 'center',
                 editor: {
                     type: 'validatebox',
                     options: {
                         required: true,
-                        missingMessage: '蔬菜名必填'
+                        missingMessage: '名字必填'
                     }
                 }
             },
             {
                 field: 'vegeCode',
-                title: '蔬菜编码',
+                title: '编码',
                 width: 100,
                 align: 'center',
                 editor: {
                     type: 'validatebox',
                     options: {
                         required: true,
-                        missingMessage: '蔬菜名必填'
+                        missingMessage: '编码必填'
                     }
                 }
             },
             {
                 field: 'price',
-                title: '蔬菜价格',
+                title: '价格',
                 width: 100,
                 align: 'center',
                 editor: {
                     type: 'numberbox',
                     options: {
                         required: true,
-                        missingMessage: '蔬菜价格必填',
+                        missingMessage: '价格必填',
                         min: 0,
                         max: 99999,
                         precision: 2
@@ -75,8 +75,39 @@ $(function () {
                 }
             },
             {
+                field: 'salePrice',
+                title: '销售价格',
+                width: 100,
+                align: 'center',
+                editor: {
+                    type: 'numberbox',
+                    options: {
+                        required: true,
+                        missingMessage: '销售价格必填',
+                        min: 0,
+                        max: 99999,
+                        precision: 2
+                    }
+                }
+            },
+            {
+                field: 'rebate',
+                title: '折扣',
+                width: 100,
+                align: 'center',
+                editor: {
+                    type: 'numberbox',
+                    options: {
+                        required: false,
+                        min: 0,
+                        max: 1,
+                        precision: 2
+                    }
+                }
+            },
+            {
                 field: 'unitId',
-                title: '蔬菜单位',
+                title: '单位',
                 width: 100,
                 align: 'center',
                 hidden: true,
@@ -94,13 +125,13 @@ $(function () {
                         textField: 'unitName',
                         required: true,
                         editable: false,
-                        missingMessage: '蔬菜单位必填'
+                        missingMessage: '单位必填'
                     }
                 }
             },
             {
                 field: 'unitName',
-                title: '蔬菜单位',
+                title: '单位',
                 width: 100,
                 align: 'center',
             },
@@ -117,7 +148,7 @@ $(function () {
         pageList: [5, 10, 15, 20, 25],
         toolbar: [
             {
-                text: '新增蔬菜',
+                text: '新增',
                 iconCls: 'icon-add',
                 handler: function () {
                     if (vegeEditing == undefined) {
@@ -136,7 +167,7 @@ $(function () {
                 }
             },
             {
-                text: '修改蔬菜',
+                text: '修改',
                 iconCls: 'icon-edit',
                 handler: function () {
                     var arr = $('#vegeId').datagrid('getSelections');
@@ -161,7 +192,7 @@ $(function () {
                 }
             },
             {
-                text: '删除蔬菜',
+                text: '删除',
                 iconCls: 'icon-remove',
                 handler: function () {
                     var arr = $('#vegeId').datagrid('getSelections');
@@ -238,7 +269,7 @@ $(function () {
                 }
             },
             {
-                text: '菜名：<input type="text" id="vegeNameId"/>'
+                text: '名字：<input type="text" id="vegeNameId"/>'
             },
             {
                 text: '编码：<input type="text" id="vegeCodeId"/>'
