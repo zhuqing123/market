@@ -21,9 +21,11 @@ public class OrderOperatyFrom implements Serializable {
     @Digits(integer = 8, fraction = 2, message = "数量最多保存两位小数")
     private Double quantity;
 
-    @NotNull(message = "折扣不能为空")
     @Digits(integer = 8, fraction = 2, message = "折扣最多保存两位小数")
     private Double rebate = Double.valueOf(1);
+
+    @Digits(integer = 8, fraction = 2, message = "折扣最多保存两位小数")
+    private Double salePrice;
 
     public String getCommodityId() {
         return commodityId;
@@ -47,5 +49,13 @@ public class OrderOperatyFrom implements Serializable {
 
     public void setRebate(Double rebate) {
         this.rebate = rebate;
+    }
+
+    public Double getSalePrice() {
+        return salePrice;
+    }
+
+    public void setSalePrice(Double salePrice) {
+        this.salePrice = salePrice;
     }
 }

@@ -50,7 +50,7 @@ public class UnitServiceImple implements UnitService {
         if (StringUtils.isBlank(unitName)) {
             throw new MarketException("单位名不能为空");
         } else {
-            if (unitName.length() >15) {
+            if (unitName.length() > 15) {
                 throw new MarketException("单位名长度不能超过10");
             }
             UnitEntity unitEntity = new UnitEntity();
@@ -64,25 +64,30 @@ public class UnitServiceImple implements UnitService {
     @Override
     public ResponseView editUnit(UnitEditForm from) throws MarketException {
         UnitEntity unitEntity = this.unitRepository.findOne(from.getId());
-        if (unitEntity==null){
+        if (unitEntity == null) {
             throw new MarketException("数据库存数据错误");
         }
         unitEntity.setUnitName(from.getUnitName());
         this.unitRepository.save(unitEntity);
-        return new ResponseView(0,"修改成功");
+        return new ResponseView(0, "修改成功");
     }
 
     @Transactional
     @Override
     public ResponseView deleteType(List<String> list) throws MarketException {
-        for (String unitId:list){
-            List<VegetablesEntity> vegetablesEntities=this.vegetablesRepository.findByUnitId(unitId);
-            if (!CollectionUtils.isEmpty(vegetablesEntities)){
+        for (String unitId : list) {
+            List<VegetablesEntity> vegetablesEntities = this.vegetablesRepository.findByUnitId(unitId);
+            if (!CollectionUtils.isEmpty(vegetablesEntities)) {
                 throw new MarketException("单位与菜品已经有关联不能删除");
             }
         }
         List<UnitEntity> unitEntities = this.unitRepository.findAll(list);
         this.unitRepository.delete(unitEntities);
-        return new ResponseView(0,"删除成功");
+        return new ResponseView(0, "删除成功");
+    }
+
+    @Override
+    public UnitEntity findById(String unitId) {
+        return this.unitRepository.findOne(unitId);
     }
 }

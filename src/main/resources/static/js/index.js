@@ -3,7 +3,7 @@ $(function () {
     var vegeEditing;//判断蔬菜是否处于编辑状态；
     var vegeFlag;//判断蔬菜新增和修改
     $('#vegeId').datagrid({
-        title: '蔬菜列表',
+        title: '水果列表',
         fitColumns: true,
         striped: true,
         loadMsg: '数据加载中',
@@ -322,6 +322,299 @@ $(function () {
         }
     });
 
+
+    /**订单页面*/
+    var vegeEditing;//判断蔬菜是否处于编辑状态；
+    var vegeFlag;//判断蔬菜新增和修改
+    $('#orderId').datagrid({
+        title: '订单列表',
+        fitColumns: true,
+        striped: true,
+        loadMsg: '数据加载中',
+        url: '/market/v1/order/list/page',
+        method: 'get',
+        loadFilter: function (data) {
+            if (data.status == 0) {
+                var datas = {"total": data.data.totalElements, "rows": data.data.content}
+                return datas;
+            }
+        },
+        rownumbers: true,
+        idField: 'id',
+        // singleSelect: true,
+        frozenColumns: [[
+            {
+                field: 'ck',
+                checkbox: true
+            }
+        ]],
+        columns: [[
+            {
+                field: 'id',
+                title: '主键',
+                width: 100,
+                align: 'center',
+                hidden: true
+            },
+            {
+                field: 'commodityId',
+                title: '商品',
+                width: 100,
+                align: 'center',
+                editor: {
+                    type: 'combogrid',
+                    options: {
+                        url: '/market/v1/find/vegeList',
+                        loadFilter: function (data) {
+                            if (data.status == 0) {
+                                var datas = data.data
+                                return datas;
+                            }
+                        },
+                        idField: 'id',
+                        panelWidth: 450,
+                        textField: 'vegeName',
+                        method: 'get',
+                        columns: [[
+                            {
+                                field: 'id',
+                                title: '主键',
+                                width: 100
+                            },
+                            {
+                                field: 'vegeName',
+                                title: '菜名',
+                                width: 100
+                            },
+                            {
+                                field: 'vegeCode',
+                                title: '菜编码',
+                                width: 100
+                            }
+                        ]],
+                        multiple: true,
+                        required: true,
+                        editable: false,
+                        missingMessage: '菜名必填'
+                    }
+                }
+            },
+            {
+                field: 'vegeName',
+                title: '商品',
+                width: 100,
+                align: 'center',
+            },
+            {
+                field: 'quantity',
+                title: '数量',
+                width: 100,
+                align: 'center',
+                editor: {
+                    type: 'numberbox',
+                    options: {
+                        required: true,
+                        missingMessage: '数量必填',
+                        min: 0,
+                        max: 99999,
+                        precision: 2
+                    }
+                }
+            },
+            {
+                field: 'salePrice',
+                title: '销售价',
+                width: 100,
+                align: 'center',
+                editor: {
+                    type: 'numberbox',
+                    options: {
+                        required: false,
+                        min: 0,
+                        max: 99999,
+                        precision: 2
+                    }
+                }
+            },
+            {
+                field: 'rebate',
+                title: '折扣',
+                width: 100,
+                align: 'center',
+                editor: {
+                    type: 'numberbox',
+                    options: {
+                        required: false,
+                        min: 0,
+                        max: 1,
+                        precision: 2
+                    }
+                }
+            },
+            {
+                field: 'price',
+                title: '价格',
+                width: 100,
+                align: 'center',
+            },
+            {
+                field: 'totalPrice',
+                title: '总价',
+                width: 100,
+                align: 'center',
+            },
+            {
+                field: 'totalSalePrice',
+                title: '总销售价',
+                width: 100,
+                align: 'center',
+            },
+            {
+                field: 'profit',
+                title: '红利',
+                width: 100,
+                align: 'center',
+            },
+            {
+                field: 'unitName',
+                title: '单位',
+                width: 100,
+                align: 'center',
+            },
+            {
+                field: 'createTime',
+                title: '创建时间',
+                width: 100,
+                align: 'center',
+            }
+        ]],
+        pagination: true,
+        pageSize: 10,
+        pageNumber: 1,
+        pageList: [5, 10, 15, 20, 25],
+        toolbar: [
+            {
+                text: '新增',
+                iconCls: 'icon-add',
+                handler: function () {
+                    if (vegeEditing == undefined) {
+                        vegeFlag = 'add';
+                        //1.取消所有的选中
+                        $('#orderId').datagrid('unselectAll')
+                        //1.追加一行
+                        $('#orderId').datagrid('appendRow', {createTime: new Date().Format("yyyy-MM-dd hh:mm:ss")});
+                        //2.得到当前列号
+                        vegeEditing = $('#orderId').datagrid('getRows').length - 1;
+                        $('#orderId').datagrid('hideColumn', 'commodityId');
+                        $('#orderId').datagrid('showColumn', 'vegeName');
+                        //3.开启编辑状态
+                        $('#orderId').datagrid('beginEdit', vegeEditing);
+                    }
+                }
+            },
+            {
+                text: '修改',
+                iconCls: 'icon-edit',
+                handler: function () {
+                    var arr = $('#orderId').datagrid('getSelections');
+                    if (arr.length != 1) {
+                        $.messager.show({
+                            title: '提示信息',
+                            msg: '只能选择一条记录进行修改',
+                            timeout: 200
+                        });
+                    } else {
+                        if (vegeEditing == undefined) {
+                            vegeFlag = 'edit';
+                            //根据行记录对象，得到该行索引位置
+                            vegeEditing = $('#vegeId').datagrid('getRowIndex', arr[0]);
+                            //开启编辑状态
+                            $('#orderId').datagrid('hideColumn', 'commodityId');
+                            $('#orderId').datagrid('showColumn', 'vegeName');
+                            $('#orderId').datagrid('beginEdit', vegeEditing)
+                        }
+                    }
+
+                }
+            },
+            {
+                text: '保存',
+                iconCls: 'icon-save',
+                handler: function () {
+                    //保存前进行数据验证，结束编辑，释放编辑状态
+                    if ($('#orderId').datagrid('validateRow', vegeEditing)) {
+                        $('#orderId').datagrid('endEdit', vegeEditing);
+                        $('#orderId').datagrid('hideColumn', 'commodityId');
+                        $('#orderId').datagrid('showColumn', 'vegeName');
+                        vegeEditing = undefined;
+                    }
+                }
+            },
+            {
+                text: '取消',
+                iconCls: 'icon-cancel',
+                handler: function () {
+                    $('#orderId').datagrid('hideColumn', 'commodityId');
+                    $('#orderId').datagrid('showColumn', 'vegeName');
+                    $('#orderId').datagrid('reload');
+                    vegeEditing = undefined;
+
+                }
+            },
+            {
+                text: '名字：<input type="text" id="vegeNameId"/>'
+            },
+            {
+                text: '编码：<input type="text" id="vegeCodeId"/>'
+            },
+            {
+                id: 'searchBtn',
+                text: '查询',
+                iconCls: 'icon-search',
+                handler: function () {
+                    $('#orderId').datagrid('load', {
+                        vegeName: $('#vegeNameId').val(),
+                        vegeCode: $('#vegeCodeId').val()
+                    })
+                }
+            }
+
+        ],
+        onAfterEdit: function (index, record) {
+            if (vegeFlag == 'add') {
+                $.ajax({
+                    url: '/market/v1/add/vege',
+                    data: record,
+                    type: 'post',
+                    dataType: 'json',
+                    success: function (data) {
+                        $.messager.show({
+                            title: '提示信息',
+                            msg: data.message,
+                            timeout: 400
+                        });
+                        $('#orderId').datagrid('reload');
+                    }
+                })
+            } else if (vegeFlag == 'edit') {
+                $.ajax({
+                    url: '/market/v1/edit/vege',
+                    data: record,
+                    type: 'put',
+                    dataType: 'json',
+                    success: function (data) {
+                        $.messager.show({
+                            title: '提示信息',
+                            msg: data.message,
+                            timeout: 400
+                        });
+                        $('#orderId').datagrid('reload');
+                    }
+                })
+            }
+        }
+    });
+
     /**客户页面*/
     var customerEditing;//判断客户是否处于编辑状态
     var customerFlag;//判断客户新增和修改
@@ -475,56 +768,6 @@ $(function () {
                             $('#customerId').datagrid('showColumn', 'type');
                             $('#customerId').datagrid('beginEdit', customerEditing)
                         }
-                    }
-
-                }
-            },
-            {
-                text: '删除客户',
-                iconCls: 'icon-remove',
-                handler: function () {
-                    var arr = $('#customerId').datagrid('getSelections');
-                    if (arr.length <= 0) {
-                        $.messager.show({
-                            title: '提示信息',
-                            msg: '请选择数据',
-                            timeout: 400
-                        });
-                    } else {
-                        $.messager.confirm({
-                            width: 380,
-                            height: 160,
-                            title: '操作确认',
-                            msg: '确定删除数据？',
-                            ok: '是',
-                            cancel: '否',
-                            fn: function (r) {
-                                if (r) {
-                                    var ids = "";
-                                    for (var i = 0; i < arr.length; i++) {
-                                        ids += arr[i].id + ",";
-                                    }
-                                    ids = ids.substring(0, ids.length - 1)
-                                    $.ajax({
-                                        url: "/market/v1/delete/customer",
-                                        data: {"ids": ids, _method: 'DELETE'},
-                                        type: "post",
-                                        dataType: "json",
-                                        success: function (data) {
-                                            $.messager.show({
-                                                title: '提示信息',
-                                                msg: data.message,
-                                                timeout: 400
-                                            });
-                                            $("#customerId").datagrid("clearSelections");
-                                            $('#customerId').datagrid('reload');
-                                        }
-                                    });
-                                } else {
-                                    return;
-                                }
-                            }
-                        });
                     }
 
                 }
@@ -890,25 +1133,25 @@ $(function () {
                                 return datas;
                             }
                         },
-                        idField:'id',
-                        panelWidth:450,
-                        textField:'vegeName',
+                        idField: 'id',
+                        panelWidth: 450,
+                        textField: 'vegeName',
                         method: 'get',
-                        columns:[[
+                        columns: [[
                             {
-                                field:'id',
-                                title:'主键',
-                                width:100
+                                field: 'id',
+                                title: '主键',
+                                width: 100
                             },
                             {
-                                field:'vegeName',
-                                title:'菜名',
-                                width:100
+                                field: 'vegeName',
+                                title: '菜名',
+                                width: 100
                             },
                             {
-                                field:'vegeCode',
-                                title:'菜编码',
-                                width:100
+                                field: 'vegeCode',
+                                title: '菜编码',
+                                width: 100
                             }
                         ]],
                         multiple: true,

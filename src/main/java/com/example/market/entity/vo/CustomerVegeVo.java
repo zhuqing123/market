@@ -12,20 +12,27 @@ public class CustomerVegeVo {
 
     private String id;
 
-    private String custmerId;//客户id
+    //客户id
+    private String custmerId;
 
-    private String vegeId;//蔬菜id
+    //蔬菜id
+    private String vegeId;
 
+    //送货时间
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
-    private Date sendDate;//送货时间
+    private Date sendDate;
 
-    private Double price= Double.valueOf(0);//出售价格
+    //出售价格
+    private Double price= Double.valueOf(0);
 
-    private Double totlePrice= Double.valueOf(0);//单品总价格
+    //单品总价格
+    private Double totlePrice= Double.valueOf(0);
 
-    private Double count= Double.valueOf(0);//数量
+    //数量
+    private Double count= Double.valueOf(0);
 
-    private Double profit= Double.valueOf(0);//利润
+    //利润
+    private Double profit= Double.valueOf(0);
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date createTime;

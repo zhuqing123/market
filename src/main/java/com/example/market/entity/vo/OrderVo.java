@@ -1,70 +1,71 @@
-package com.example.market.entity;
+package com.example.market.entity.vo;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import java.io.Serializable;
+import java.util.Date;
 
 /**
  * @Author ZhuQing
- * @Date: 2018/8/14  09:14
+ * @Date: 2018/8/17  23:51
  */
-@Entity
-@Table(name = "t_order")
-public class OrderEntity extends BaseEntity {
+public class OrderVo implements Serializable {
+
+    private String id;
 
     /**
      * 商品id
      */
-    @Column(name = "commodity_id", columnDefinition = "double(10,2)")
     private String commodityId;
 
     /**
      * 数量
      */
-    @Column(name = "quantity", columnDefinition = "double(10,2)")
     private Double quantity;
 
     /**
      * 总价
      */
-    @Column(name = "total_price", columnDefinition = "double(10,2)")
     private Double totalPrice;
 
     /**
      * 总销售价
      */
-    @Column(name = "total_sale_price", columnDefinition = "double(10,2)")
     private Double totalSalePrice;
 
     /**
      * 销售价
      */
-    @Column(name = "sale_price", columnDefinition = "double(10,2)")
     private Double salePrice;
 
     /**
      * 进价
      */
-    @Column(name = "price", columnDefinition = "double(10,2)")
     private Double price;
 
     /**
      * 折扣
      */
-    @Column(name = "rebate", columnDefinition = "double(10,2)")
     private Double rebate;
 
     /**
      * 利润
      */
-    @Column(name = "profit", columnDefinition = "double(10,2)")
     private Double profit;
 
-    /**
-     * 单位
-     */
-    @Column(name = "unitName")
-    private String unitName;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
+    private Date createTime;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
+    private Date lastModifyTime;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getCommodityId() {
         return commodityId;
@@ -88,6 +89,14 @@ public class OrderEntity extends BaseEntity {
 
     public void setTotalPrice(Double totalPrice) {
         this.totalPrice = totalPrice;
+    }
+
+    public Double getTotalSalePrice() {
+        return totalSalePrice;
+    }
+
+    public void setTotalSalePrice(Double totalSalePrice) {
+        this.totalSalePrice = totalSalePrice;
     }
 
     public Double getSalePrice() {
@@ -122,19 +131,19 @@ public class OrderEntity extends BaseEntity {
         this.profit = profit;
     }
 
-    public Double getTotalSalePrice() {
-        return totalSalePrice;
+    public Date getCreateTime() {
+        return createTime;
     }
 
-    public void setTotalSalePrice(Double totalSalePrice) {
-        this.totalSalePrice = totalSalePrice;
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 
-    public String getUnitName() {
-        return unitName;
+    public Date getLastModifyTime() {
+        return lastModifyTime;
     }
 
-    public void setUnitName(String unitName) {
-        this.unitName = unitName;
+    public void setLastModifyTime(Date lastModifyTime) {
+        this.lastModifyTime = lastModifyTime;
     }
 }

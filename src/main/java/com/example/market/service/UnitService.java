@@ -1,5 +1,7 @@
 package com.example.market.service;
 
+import com.example.market.entity.UnitEntity;
+import com.example.market.entity.VegetablesEntity;
 import com.example.market.entity.form.UnitEditForm;
 import com.example.market.utils.MarketException;
 import com.example.market.utils.ResponseView;
@@ -18,4 +20,6 @@ public interface UnitService {
     ResponseView editUnit(UnitEditForm from) throws MarketException;
 
     ResponseView deleteType(List<String> list) throws MarketException;
+
+    UnitEntity findById(String unitId);
 }
