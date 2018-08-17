@@ -191,59 +191,59 @@ $(function () {
 
                 }
             },
-            {
-                text: '删除',
-                iconCls: 'icon-remove',
-                handler: function () {
-                    var arr = $('#vegeId').datagrid('getSelections');
-                    if (arr.length <= 0) {
-                        $.messager.show({
-                            title: '提示信息',
-                            msg: '请选择数据',
-                            timeout: 200
-                        });
-                    } else {
-                        $.messager.confirm({
-                            width: 380,
-                            height: 160,
-                            title: '操作确认',
-                            msg: '确定删除数据？',
-                            ok: '是',
-                            cancel: '否',
-                            fn: function (r) {
-                                if (r) {
-                                    var ids = '';
-                                    //var ids=new Array();
-                                    for (var i = 0; i < arr.length; i++) {
-                                        ids += arr[i].id + ",";
-                                        //ids.push(arr[i].id);
-                                    }
-                                    ids = ids.substring(0, ids.length - 1);
-                                    $.ajax({
-                                        url: '/market/v1/delete/vege',
-                                        data: {"ids": ids, _method: 'DELETE'},
-                                        type: 'post',
-                                        dataType: "json",
-                                        success: function (data) {
-                                            $.messager.show({
-                                                title: '提示信息',
-                                                msg: data.message,
-                                                timeout: 400
-                                            });
-                                            $("#vegeId").datagrid("clearSelections");
-                                            $('#vegeId').datagrid('reload');
-                                        }
-                                    })
-
-                                } else {
-                                    return;
-                                }
-                            }
-                        });
-                    }
-
-                }
-            },
+            // {
+            //     text: '删除',
+            //     iconCls: 'icon-remove',
+            //     handler: function () {
+            //         var arr = $('#vegeId').datagrid('getSelections');
+            //         if (arr.length <= 0) {
+            //             $.messager.show({
+            //                 title: '提示信息',
+            //                 msg: '请选择数据',
+            //                 timeout: 200
+            //             });
+            //         } else {
+            //             $.messager.confirm({
+            //                 width: 380,
+            //                 height: 160,
+            //                 title: '操作确认',
+            //                 msg: '确定删除数据？',
+            //                 ok: '是',
+            //                 cancel: '否',
+            //                 fn: function (r) {
+            //                     if (r) {
+            //                         var ids = '';
+            //                         //var ids=new Array();
+            //                         for (var i = 0; i < arr.length; i++) {
+            //                             ids += arr[i].id + ",";
+            //                             //ids.push(arr[i].id);
+            //                         }
+            //                         ids = ids.substring(0, ids.length - 1);
+            //                         $.ajax({
+            //                             url: '/market/v1/delete/vege',
+            //                             data: {"ids": ids, _method: 'DELETE'},
+            //                             type: 'post',
+            //                             dataType: "json",
+            //                             success: function (data) {
+            //                                 $.messager.show({
+            //                                     title: '提示信息',
+            //                                     msg: data.message,
+            //                                     timeout: 400
+            //                                 });
+            //                                 $("#vegeId").datagrid("clearSelections");
+            //                                 $('#vegeId').datagrid('reload');
+            //                             }
+            //                         })
+            //
+            //                     } else {
+            //                         return;
+            //                     }
+            //                 }
+            //             });
+            //         }
+            //
+            //     }
+            // },
             {
                 text: '保存',
                 iconCls: 'icon-save',
@@ -348,6 +348,7 @@ $(function () {
                 checkbox: true
             }
         ]],
+
         columns: [[
             {
                 field: 'id',
@@ -358,50 +359,31 @@ $(function () {
             },
             {
                 field: 'commodityId',
-                title: '商品',
+                title: '商品名',
                 width: 100,
                 align: 'center',
+                hidden: true,
                 editor: {
-                    type: 'combogrid',
+                    type: 'combobox',
                     options: {
                         url: '/market/v1/find/vegeList',
+                        method: 'get',
                         loadFilter: function (data) {
                             if (data.status == 0) {
-                                var datas = data.data
-                                return datas;
+                                return data.data;
                             }
                         },
-                        idField: 'id',
-                        panelWidth: 450,
+                        valueField: 'id',
                         textField: 'vegeName',
-                        method: 'get',
-                        columns: [[
-                            {
-                                field: 'id',
-                                title: '主键',
-                                width: 100
-                            },
-                            {
-                                field: 'vegeName',
-                                title: '菜名',
-                                width: 100
-                            },
-                            {
-                                field: 'vegeCode',
-                                title: '菜编码',
-                                width: 100
-                            }
-                        ]],
-                        multiple: true,
                         required: true,
                         editable: false,
-                        missingMessage: '菜名必填'
+                        missingMessage: '单位必填'
                     }
                 }
             },
             {
-                field: 'vegeName',
-                title: '商品',
+                field: 'combogrName',
+                title: '商名',
                 width: 100,
                 align: 'center',
             },
@@ -505,8 +487,8 @@ $(function () {
                         $('#orderId').datagrid('appendRow', {createTime: new Date().Format("yyyy-MM-dd hh:mm:ss")});
                         //2.得到当前列号
                         vegeEditing = $('#orderId').datagrid('getRows').length - 1;
-                        $('#orderId').datagrid('hideColumn', 'commodityId');
-                        $('#orderId').datagrid('showColumn', 'vegeName');
+                        $('#orderId').datagrid('hideColumn', 'combogrName');
+                        $('#orderId').datagrid('showColumn', 'commodityId');
                         //3.开启编辑状态
                         $('#orderId').datagrid('beginEdit', vegeEditing);
                     }
@@ -527,10 +509,10 @@ $(function () {
                         if (vegeEditing == undefined) {
                             vegeFlag = 'edit';
                             //根据行记录对象，得到该行索引位置
-                            vegeEditing = $('#vegeId').datagrid('getRowIndex', arr[0]);
+                            vegeEditing = $('#orderId').datagrid('getRowIndex', arr[0]);
                             //开启编辑状态
-                            $('#orderId').datagrid('hideColumn', 'commodityId');
-                            $('#orderId').datagrid('showColumn', 'vegeName');
+                            $('#orderId').datagrid('hideColumn', 'combogrName');
+                            $('#orderId').datagrid('showColumn', 'commodityId');
                             $('#orderId').datagrid('beginEdit', vegeEditing)
                         }
                     }
@@ -545,7 +527,7 @@ $(function () {
                     if ($('#orderId').datagrid('validateRow', vegeEditing)) {
                         $('#orderId').datagrid('endEdit', vegeEditing);
                         $('#orderId').datagrid('hideColumn', 'commodityId');
-                        $('#orderId').datagrid('showColumn', 'vegeName');
+                        $('#orderId').datagrid('showColumn', 'combogrName');
                         vegeEditing = undefined;
                     }
                 }
@@ -554,9 +536,9 @@ $(function () {
                 text: '取消',
                 iconCls: 'icon-cancel',
                 handler: function () {
-                    $('#orderId').datagrid('hideColumn', 'commodityId');
-                    $('#orderId').datagrid('showColumn', 'vegeName');
                     $('#orderId').datagrid('reload');
+                    $('#orderId').datagrid('hideColumn', 'commodityId');
+                    $('#orderId').datagrid('showColumn', 'combogrName');
                     vegeEditing = undefined;
 
                 }
@@ -583,7 +565,7 @@ $(function () {
         onAfterEdit: function (index, record) {
             if (vegeFlag == 'add') {
                 $.ajax({
-                    url: '/market/v1/add/vege',
+                    url: '/market/v1/add/order',
                     data: record,
                     type: 'post',
                     dataType: 'json',
@@ -598,7 +580,7 @@ $(function () {
                 })
             } else if (vegeFlag == 'edit') {
                 $.ajax({
-                    url: '/market/v1/edit/vege',
+                    url: '/market/v1/edit/order/id/' + record.id,
                     data: record,
                     type: 'put',
                     dataType: 'json',

@@ -15,7 +15,7 @@ public class OrderEntity extends BaseEntity {
     /**
      * 商品id
      */
-    @Column(name = "commodity_id", columnDefinition = "double(10,2)")
+    @Column(name = "commodity_id")
     private String commodityId;
 
     /**

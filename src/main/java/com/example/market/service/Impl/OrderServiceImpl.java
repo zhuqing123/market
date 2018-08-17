@@ -100,6 +100,10 @@ public class OrderServiceImpl implements OrderService {
                     .forEach(orderEntity -> {
                         OrderVo orderVo = new OrderVo();
                         BeanUtils.copyProperties(orderEntity, orderVo);
+                        VegetablesEntity vegetablesEntity = this.vegetablesService.findById(orderVo.getCommodityId());
+                        if (null != vegetablesEntity) {
+                            orderVo.setCombogrName(vegetablesEntity.getVegeName());
+                        }
                         pageVo.getContent().add(orderVo);
                     });
 
@@ -139,7 +143,7 @@ public class OrderServiceImpl implements OrderService {
         } else {
             orderEntity.setRebate(Double.valueOf(1));
         }
-        Double totalSalePrice = this.multiplication(orderEntity.getRebate(), this.multiplication(orderEntity.getQuantity(), vegetablesEntity.getSalePrice()));
+        Double totalSalePrice = this.multiplication(orderEntity.getRebate(), this.multiplication(orderEntity.getQuantity(), orderEntity.getSalePrice()));
         orderEntity.setTotalSalePrice(totalSalePrice);
 
         Double totalPrice = this.multiplication(orderEntity.getPrice(), orderEntity.getQuantity());

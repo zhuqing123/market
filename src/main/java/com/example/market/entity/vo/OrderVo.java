@@ -53,10 +53,20 @@ public class OrderVo implements Serializable {
      */
     private Double profit;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
+    /**
+     * 商品名
+     */
+    private String combogrName;
+
+    /**
+     * 单位
+     */
+    private String unitName;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date createTime;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date lastModifyTime;
 
     public String getId() {
@@ -145,5 +155,21 @@ public class OrderVo implements Serializable {
 
     public void setLastModifyTime(Date lastModifyTime) {
         this.lastModifyTime = lastModifyTime;
+    }
+
+    public String getCombogrName() {
+        return combogrName;
+    }
+
+    public void setCombogrName(String combogrName) {
+        this.combogrName = combogrName;
+    }
+
+    public String getUnitName() {
+        return unitName;
+    }
+
+    public void setUnitName(String unitName) {
+        this.unitName = unitName;
     }
 }
